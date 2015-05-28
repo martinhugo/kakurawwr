@@ -12,4 +12,5 @@ This game's features include, but are not limited to :
 - exporting grids as PDF
 
 This application was developed in Python 3.3.5, with Pygame 1.9.2. PyFPDF was used for grids's exports.
+
 A Window's installer is available [here](/releases/latest).
