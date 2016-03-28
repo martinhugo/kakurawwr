@@ -26,7 +26,6 @@ from grille import *
 from exceptions import *
 from constantes import *
 
-
 class Solveur:
     """ Classe permettant de calculer la solution d'une grille tout en affichant les différentes étapes de calcul à l'utilisateur.
         Cette classe possède 4 attributs:
