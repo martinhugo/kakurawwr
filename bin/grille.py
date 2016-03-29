@@ -287,7 +287,6 @@ class Grille:
 
 
     # Placement des valeurs
-    
     def _placer_valeurs(self):
         """ Affecte toutes les valeurs solution aux cases blanches, en fonction des valeurs déja affectées aux autres cases du bloc.
             Cette méthoe appelle choix_valeur, qui permet de selectionner une valeur n'étant ni dans la ligne, ni dans la colonne.
@@ -767,6 +766,29 @@ class Grille:
 
 
         return in_plage
+
+
+    def getEmptySquares(self):
+        """ Retourne la liste des cases vides.
+            return:
+                la liste des cases vides
+        """
+        result = []
+        for (i,j) in self.keys():
+            if type(self[i,j]) is cases.CaseVide and self[i,j].valeur_saisie == -1:
+                result.append(self[i,j])
+        return result
+
+    @staticmethod
+    def len_domaine(case):
+        return len(case.domaine)
+
+
+    def getNextSquareUsingHeuristics(self):
+        """ Retourne la prochaine case vide de la grille ayant le moins de valeur possibles et le degré de contraintes le plus élevé. """
+        result = self.getEmptySquares()
+        result.sort(key=self.len_domaine)
+        return result[0]
 
 
 

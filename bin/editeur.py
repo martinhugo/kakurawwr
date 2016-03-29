@@ -171,9 +171,9 @@ class Editeur:
 
                     elif self.bouton_verif.clicked(curseur):
                         if not(self.erreur):
-                            ecran_solveur = solveur.Solveur(self._fenetre, self._grille)
                             try:
-                                self.erreur = ecran_solveur.calculate_solution()
+                                ecran_solveur = solveur.Solveur(self._fenetre, self._grille)
+                                self.erreur = ecran_solveur.loop()
                                 self._grille.confirmer_solution()
                                 self._grille.solved = True
                             except Exception as e:

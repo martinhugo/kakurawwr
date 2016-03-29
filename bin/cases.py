@@ -114,8 +114,7 @@ class CaseVide(Widget):
     def __str__(self):
         """Chaine retournée lors d'un print ou d'une conversion en str de la classe"""
         return str(self.valeur_saisie)
-    
-	    
+
 
 
 

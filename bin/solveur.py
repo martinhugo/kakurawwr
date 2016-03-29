@@ -26,6 +26,7 @@ from grille import *
 from exceptions import *
 from constantes import *
 
+
 class Solveur:
     """ Classe permettant de calculer la solution d'une grille tout en affichant les différentes étapes de calcul à l'utilisateur.
         Cette classe possède 4 attributs:
@@ -46,6 +47,11 @@ class Solveur:
         self._fenetre = fenetre
         self._grille = grille
         self.bouton_abandon = boutons.Bouton(TITRE_BOUTON_ABANDON)
+
+        self.bouton_simple = boutons.Bouton(TITRE_BOUTON_SIMPLE)
+        self.bouton_moyen = boutons.Bouton(TITRE_BOUTON_MOYEN)
+        self.bouton_complexe = boutons.Bouton(TITRE_BOUTON_COMPLEXE)
+
         self.barre_erreur = boutons.BarreErreur(pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_BOUTON))
         self.compteur_changement_message = 0
         self.message = ""
@@ -59,28 +65,79 @@ class Solveur:
         bouton_img = pygame.image.load(CHEMIN_IMAGE_BOUTON).convert_alpha()
 
         self.bouton_abandon.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_RETOUR)
+        self.bouton_simple.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_SIMPLE)
+        self.bouton_moyen.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_MOYEN)
+        self.bouton_complexe.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_COMPLEXE)
+
         self._grille.afficher_grille(self._fenetre)
         self.barre_erreur.afficher_erreur(self._fenetre, self.message , COULEUR_POLICE)
 
+    def loop(self):
+        """ Méthode permettant de résoudre une grille selon plusieurs niveau de résolution.
+            Cette méthode est une boucle infinie attendant un événement. 
 
-    def calculate_solution(self):
+            On peut quitter le jeu ou retourner au menu depuis cette méthode.
+            Le calcul de la solution peut être demandé, si aucune erreur n'est présente dans la grille.
+            On peut aussi acceder au jeu de la grille saisie depuis cette méthode.
+
+        """
+        # Boucle infinie
+        while True:
+            self._fenetre.fill(COULEUR_FOND)
+            self.afficher()
+            pygame.display.flip()
+
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+
+                ## Clic 
+                elif event.type == MOUSEBUTTONUP and event.button == 1:
+                    curseur = pygame.Rect(event.pos, (0,0))
+
+                    if self.bouton_simple.clicked(curseur):
+                        result = self.calculate_solution("SLOW")
+                    elif self.bouton_moyen.clicked(curseur):
+                        result = self.calculate_solution("MEDIUM")
+                    elif self.bouton_moyen.clicked(curseur):
+                        result = self.calculate_solution("QUICK")
+
+                    if result == True:
+                        return MESSAGE_GRILLE_RESOLUE
+
+                    elif self.bouton_abandon.clicked(curseur):
+                        raise AbandonException()
+
+
+
+    def calculate_solution(self, flag):
         """ Méthode permettant de calculer la solution d'une grille.
             Dans un premier temps, la grille est mis dans une forme calculable.
             Cette méthode calcule l'ensemble des domaines de valeurs pour chaque plage et affecte à domaine leur intersection.
             Elle verifie ensuite si la grille à une solution.
             Elle appelle le solveur sur la première case si c'est le cas
         """
-        self.message = MESSAGE_CORRECTION_GRILLE
-        self.correction_grille()
-        self.message = MESSAGE_ENSEMBLES_POSSIBLES
-        self.distribuer_domaine()
-        self.message = MESSAGE_SOLVABILITE
-        self.has_solution()
-        self.message = MESSAGE_CALCUL
-        self.solveur(0,0)
-        return MESSAGE_GRILLE_RESOLUE
+        if flag == "SLOW":
+            self.message = MESSAGE_CORRECTION_GRILLE
+            self.correction_grille()
+            self.message = MESSAGE_ENSEMBLES_POSSIBLES
+            self.distribuer_domaine()
+            self.message = MESSAGE_SOLVABILITE
+            self.has_solution()
+            self.message = MESSAGE_CALCUL
+            self.baseSolver(0,0)
+            return True
 
-
+        elif flag == "MEDIUM":
+            self.message = MESSAGE_CORRECTION_GRILLE
+            self.correction_grille()
+            self.message = MESSAGE_ENSEMBLES_POSSIBLES
+            self.distribuer_domaine()
+            self.message = MESSAGE_SOLVABILITE
+            self.has_solution()
+            self.message = MESSAGE_CALCUL
+            print(self.MRVSolver())
+            #return True
 
     def correction_grille(self):
         """ Méthode permettant de corriger les éventuelles erreurs laissées par l'utilisateur lors de la saisie de la grille. 
@@ -98,7 +155,7 @@ class Solveur:
 
 
 
-    def solveur(self, i, j):
+    def baseSolver(self, i, j):
         """ Méthode permettant de générer la solution d'une grille. 
             Cette méthode est récursive et s'appelle sur les cases de la grille.
 
@@ -149,10 +206,10 @@ class Solveur:
             while not(fin) and len(valeurs_possibles) != 0:
 
                 if i < self._grille.nb_colonne - 1:
-                    fin = self.solveur(i+1, j)
+                    fin = self.baseSolver(i+1, j)
 
                 elif j < self._grille.nb_ligne - 1:
-                    fin = self.solveur(0,j+1)
+                    fin = self.baseSolver(0,j+1)
 
                 if not(fin):
                     valeurs_possibles.remove(self._grille[i,j].valeur_saisie)
@@ -172,10 +229,59 @@ class Solveur:
                 return True
 
             if i < self._grille.nb_colonne - 1:
-                return self.solveur(i+1, j)
+                return self.baseSolver(i+1, j)
             elif j < self._grille.nb_ligne - 1:
-               return self.solveur(0,j+1)
+               return self.baseSolver(0,j+1)
 
+
+
+    def MRVSolver(self):
+
+        self._fenetre.fill(COULEUR_FOND)
+        self.afficher()
+        pygame.display.flip()
+        self.gestion_evenement()
+
+        square = self._grille.getNextSquareUsingHeuristics()
+        valeurs_possibles = list(square.domaine)
+        erreur = True
+        fin = False
+
+        # On teste chaque valeur jusqu'a ce qu'une marche
+        while erreur and len(valeurs_possibles) != 0:
+            square.valeur_saisie = random.choice(valeurs_possibles)
+            try:
+                self._grille.validate()
+                erreur = False
+            except:
+                valeurs_possibles.remove(square.valeur_saisie)
+                erreur = True
+
+        # Si aucune ne marche, on retourne False. La grille n'a pas de solutions en l'état
+        if erreur:
+            square.valeur_saisie = -1
+            return False
+
+        # Si la grille est fini, on retourne la solution
+        elif self._grille.victoire():
+            return True
+
+
+        # Partie recursive
+        while not(fin) and len(valeurs_possibles) != 0:
+
+            fin = self.MRVSolver()
+
+            if not(fin):
+                valeurs_possibles.remove(square.valeur_saisie)
+                if len(valeurs_possibles) != 0:
+                    square.valeur_saisie = random.choice(valeurs_possibles)
+
+        if fin:
+            return True
+        else:
+            square.valeur_saisie = -1
+            return False
 
 
     def distribuer_domaine(self):
