@@ -48,9 +48,9 @@ class Solveur:
         self._grille = grille
         self.bouton_abandon = boutons.Bouton(TITRE_BOUTON_ABANDON)
 
-        self.bouton_simple = boutons.Bouton(TITRE_BOUTON_SIMPLE)
-        self.bouton_moyen = boutons.Bouton(TITRE_BOUTON_MOYEN)
-        self.bouton_complexe = boutons.Bouton(TITRE_BOUTON_COMPLEXE)
+        self.bouton_simple = boutons.Bouton(TITRE_BOUTON_SOLVEUR_SIMPLE)
+        self.bouton_moyen = boutons.Bouton(TITRE_BOUTON_SOLVEUR_MOYEN)
+        self.bouton_complexe = boutons.Bouton(TITRE_BOUTON_SOLVEUR_COMPLEXE)
 
         self.barre_erreur = boutons.BarreErreur(pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_BOUTON))
         self.compteur_changement_message = 0
@@ -65,9 +65,9 @@ class Solveur:
         bouton_img = pygame.image.load(CHEMIN_IMAGE_BOUTON).convert_alpha()
 
         self.bouton_abandon.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_RETOUR)
-        self.bouton_simple.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_SIMPLE)
-        self.bouton_moyen.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_MOYEN)
-        self.bouton_complexe.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_COMPLEXE)
+        self.bouton_simple.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_SOLVEUR_SIMPLE)
+        self.bouton_moyen.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_SOLVEUR_MOYEN)
+        self.bouton_complexe.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_SOLVEUR_COMPLEXE)
 
         self._grille.afficher_grille(self._fenetre)
         self.barre_erreur.afficher_erreur(self._fenetre, self.message , COULEUR_POLICE)
@@ -94,6 +94,8 @@ class Solveur:
                 ## Clic 
                 elif event.type == MOUSEBUTTONUP and event.button == 1:
                     curseur = pygame.Rect(event.pos, (0,0))
+
+                    result = False
 
                     if self.bouton_simple.clicked(curseur):
                         result = self.calculate_solution("SLOW")
@@ -133,11 +135,12 @@ class Solveur:
             self.correction_grille()
             self.message = MESSAGE_ENSEMBLES_POSSIBLES
             self.distribuer_domaine()
+            self._grille.initDegre()
             self.message = MESSAGE_SOLVABILITE
             self.has_solution()
             self.message = MESSAGE_CALCUL
-            print(self.MRVSolver())
-            #return True
+            self.MRVSolver()
+            return True
 
     def correction_grille(self):
         """ Méthode permettant de corriger les éventuelles erreurs laissées par l'utilisateur lors de la saisie de la grille. 
@@ -236,7 +239,7 @@ class Solveur:
 
 
     def MRVSolver(self):
-
+        """ Solveur utilisant un algorithme à backtrack recherche, en utilisant les heuristiques MRV et degré """
         self._fenetre.fill(COULEUR_FOND)
         self.afficher()
         pygame.display.flip()

@@ -47,8 +47,9 @@ class CaseVide(Widget):
         self.valeur_saisie =  -1
         self.erreur = False
         self.domaine = set(range(1,10))
-
-    def __eq__(self, element):
+        self.degre = 0
+        
+    def __eq__(self, element): 
         """ Méthode permettant de tester l'égalité entre deux cases vides """
 
         if type(element) is CaseVide:

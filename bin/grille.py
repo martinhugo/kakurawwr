@@ -729,8 +729,6 @@ class Grille:
         return valeurs_possibles
 
 
-
-
     def confirmer_solution(self):
         """ Une fois qu'une solution a été calculée et est correcte elle est confirmée.
             L'ensemble des valeurs saisies est transféré vers les solutions pour permettre le jeu de la grille.
@@ -768,6 +766,24 @@ class Grille:
         return in_plage
 
 
+    def initDegre(self):
+        """ Initialise le degré de toutes les cases vides """
+        for (i,j) in self.keys():
+            if type(self[i,j]) is cases.CaseVide:
+                self[i,j].degre = self.getDegre(i,j)
+
+
+    def getDegre(self, i,j):
+        """ Retourne le degré d'une case à la position i,j.
+            Le degré est le nombre de dépendance de la case à des cases voisines.
+            return:
+                le degré de la case (i,j)
+        """
+        value = self.longueur(self.ligne(i,j)) + self.longueur(self.colonne(i,j))
+        print(value)
+        return value
+
+
     def getEmptySquares(self):
         """ Retourne la liste des cases vides.
             return:
@@ -779,15 +795,12 @@ class Grille:
                 result.append(self[i,j])
         return result
 
-    @staticmethod
-    def len_domaine(case):
-        return len(case.domaine)
-
 
     def getNextSquareUsingHeuristics(self):
         """ Retourne la prochaine case vide de la grille ayant le moins de valeur possibles et le degré de contraintes le plus élevé. """
         result = self.getEmptySquares()
-        result.sort(key=self.len_domaine)
+        result.sort(key= lambda case: case.degre, reverse=True)
+        result.sort(key= lambda case: len(case.domaine))
         return result[0]
 
 
