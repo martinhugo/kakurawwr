@@ -31,11 +31,30 @@ class Grille:
         Elle possède un attribut de type dict, une largeur et une hauteur.
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """ Initialise la grille avec un dictionnaire vide.
             Les attributs nb_ligne et nb_colonne sont initialisés selon les constantes NB_LIGNE_GRILLE, NB_COLONNE_GRILLE
         """
         self._grid = {}
+
+        if "grid" in kwargs:
+            grid = kwargs["grid"]
+
+            for (i,j) in grid.keys():
+                
+                caseType = type(grid[i,j])
+                case = grid[i,j]
+
+                if caseType is cases.CaseVide:
+                    self[i,j] = cases.CaseVide(case)
+                
+                elif caseType is cases.CaseNoire:
+                    self[i,j] = cases.CaseNoire()
+
+                else:
+                    self[i,j] = cases.Indicatrice(case)
+
+
         self.nb_ligne = NB_LIGNE_GRILLE
         self.nb_colonne = NB_COLONNE_GRILLE
         self.solved = False
@@ -488,6 +507,16 @@ class Grille:
                 if somme != self[i,j].valeur_droite:
                     somme_fausse = True
                     self[i,j].erreur_droite = True
+            
+            else:
+                # On verifie la valeur de l'indicatrice
+                somme = self[i+1,j].valeur_saisie if self[i+1,j].valeur_saisie!=-1 else 0
+                for el in self.ligne(i+1,j):
+                    somme += el.valeur_saisie if el.valeur_saisie !=-1 else 0
+
+                if somme >= self[i,j].valeur_droite:
+                    somme_fausse = True
+                    self[i,j].erreur_droite = True
 
         # Si elle a une plage bas
         if j < self.nb_ligne-1  and type(self[i,j+1]) is cases.CaseVide:
@@ -502,6 +531,17 @@ class Grille:
                 if somme != self[i,j].valeur_bas:
                     somme_fausse = True
                     self[i,j].erreur_bas = True
+            else:
+                # On verifie la valeur de l'indicatrice
+                somme = self[i, j+1].valeur_saisie if self[i, j+1].valeur_saisie!=-1 else 0
+                for el in self.colonne(i,j+1):
+                    somme += el.valeur_saisie if el.valeur_saisie !=-1 else 0
+
+                if somme >= self[i,j].valeur_bas:
+                    somme_fausse = True
+                    self[i,j].erreur_droite = True
+
+
         return somme_fausse
 
 
@@ -733,12 +773,12 @@ class Grille:
         """ Une fois qu'une solution a été calculée et est correcte elle est confirmée.
             L'ensemble des valeurs saisies est transféré vers les solutions pour permettre le jeu de la grille.
         """
-
         for (i,j) in self.keys():
             if type(self[i,j]) is cases.CaseVide:
                 self[i,j]._solution_case = self[i,j].valeur_saisie
                 self[i,j].valeur_saisie = -1
     
+
     def has_indicatrice(self, i, j):
         """ Méthode permettant de verifier qu'une case vide appartient bien à une plage et dépend bien d'une indicatrice.
             Le haut et la gauche de la plage à laquelle elle appartient sont parcourus.
@@ -770,18 +810,7 @@ class Grille:
         """ Initialise le degré de toutes les cases vides """
         for (i,j) in self.keys():
             if type(self[i,j]) is cases.CaseVide:
-                self[i,j].degre = self.getDegre(i,j)
-
-
-    def getDegre(self, i,j):
-        """ Retourne le degré d'une case à la position i,j.
-            Le degré est le nombre de dépendance de la case à des cases voisines.
-            return:
-                le degré de la case (i,j)
-        """
-        value = self.longueur(self.ligne(i,j)) + self.longueur(self.colonne(i,j))
-        print(value)
-        return value
+                self[i,j].degre = self.longueur(self.ligne(i,j)) + self.longueur(self.colonne(i,j))
 
 
     def getEmptySquares(self):

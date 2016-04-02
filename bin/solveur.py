@@ -101,8 +101,8 @@ class Solveur:
                         result = self.calculate_solution("SLOW")
                     elif self.bouton_moyen.clicked(curseur):
                         result = self.calculate_solution("MEDIUM")
-                    elif self.bouton_moyen.clicked(curseur):
-                        result = self.calculate_solution("QUICK")
+                    elif self.bouton_complexe.clicked(curseur):
+                        result = self.calculate_solution("FAST")
 
                     if result == True:
                         return MESSAGE_GRILLE_RESOLUE
@@ -119,27 +119,21 @@ class Solveur:
             Elle verifie ensuite si la grille à une solution.
             Elle appelle le solveur sur la première case si c'est le cas
         """
+        self.message = MESSAGE_CORRECTION_GRILLE
+        self.correction_grille()
+        self.message = MESSAGE_ENSEMBLES_POSSIBLES
+        self.distribuer_domaine()
+        self._grille.initDegre()
+        self.message = MESSAGE_SOLVABILITE
+        self.has_solution()
+        self.message = MESSAGE_CALCUL
+
         if flag == "SLOW":
-            self.message = MESSAGE_CORRECTION_GRILLE
-            self.correction_grille()
-            self.message = MESSAGE_ENSEMBLES_POSSIBLES
-            self.distribuer_domaine()
-            self.message = MESSAGE_SOLVABILITE
-            self.has_solution()
-            self.message = MESSAGE_CALCUL
             self.baseSolver(0,0)
             return True
 
-        elif flag == "MEDIUM":
-            self.message = MESSAGE_CORRECTION_GRILLE
-            self.correction_grille()
-            self.message = MESSAGE_ENSEMBLES_POSSIBLES
-            self.distribuer_domaine()
-            self._grille.initDegre()
-            self.message = MESSAGE_SOLVABILITE
-            self.has_solution()
-            self.message = MESSAGE_CALCUL
-            self.MRVSolver()
+        else:  
+            self.solver(flag)
             return True
 
     def correction_grille(self):
@@ -238,53 +232,7 @@ class Solveur:
 
 
 
-    def MRVSolver(self):
-        """ Solveur utilisant un algorithme à backtrack recherche, en utilisant les heuristiques MRV et degré """
-        self._fenetre.fill(COULEUR_FOND)
-        self.afficher()
-        pygame.display.flip()
-        self.gestion_evenement()
-
-        square = self._grille.getNextSquareUsingHeuristics()
-        valeurs_possibles = list(square.domaine)
-        erreur = True
-        fin = False
-
-        # On teste chaque valeur jusqu'a ce qu'une marche
-        while erreur and len(valeurs_possibles) != 0:
-            square.valeur_saisie = random.choice(valeurs_possibles)
-            try:
-                self._grille.validate()
-                erreur = False
-            except:
-                valeurs_possibles.remove(square.valeur_saisie)
-                erreur = True
-
-        # Si aucune ne marche, on retourne False. La grille n'a pas de solutions en l'état
-        if erreur:
-            square.valeur_saisie = -1
-            return False
-
-        # Si la grille est fini, on retourne la solution
-        elif self._grille.victoire():
-            return True
-
-
-        # Partie recursive
-        while not(fin) and len(valeurs_possibles) != 0:
-
-            fin = self.MRVSolver()
-
-            if not(fin):
-                valeurs_possibles.remove(square.valeur_saisie)
-                if len(valeurs_possibles) != 0:
-                    square.valeur_saisie = random.choice(valeurs_possibles)
-
-        if fin:
-            return True
-        else:
-            square.valeur_saisie = -1
-            return False
+   
 
 
     def distribuer_domaine(self):
@@ -336,27 +284,6 @@ class Solveur:
             Elle parcourt ensuite une seconde fois la grille et verifie qu'aucune case vide n'a un domaine vide, sans avoir de valeur_saisie.
         """
 
-        for (i,j) in self._grille.keys():
-
-            # Affichage
-            self._fenetre.fill(COULEUR_FOND)
-            self.afficher()
-            pygame.display.flip()
-            self.gestion_evenement()
-
-            if type(self._grille[i,j]) is cases.CaseVide and len(self._grille[i,j].domaine) == 1:
-                # On affecte les valeurs evidentes
-                self._grille[i,j].valeur_saisie = list(self._grille[i,j].domaine)[0]
-                valeur = self._grille[i,j].valeur_saisie
-
-                # On retire cette valeur des valeurs possibles de chaque case de la plage
-                for el in self._grille.ligne(i,j):
-                    if valeur in el.domaine:
-                        el.domaine.remove(valeur)
-                for el in self._grille.colonne(i,j):
-                    if valeur in el.domaine:
-                        el.domaine.remove(valeur)
-
         # On teste si la grille a une solution
         for (i,j) in self._grille.keys():
             if type(self._grille[i,j]) is cases.CaseVide:
@@ -389,10 +316,73 @@ class Solveur:
 
                     if self.bouton_abandon.clicked(curseur):
                         raise AbandonException()
+    
 
-        
+    def solver(self, flag):
+        """ Solveur utilisant un algorithme à backtrack recherche, en utilisant les heuristiques MRV et degré """
+        self.change_message()
+        self._fenetre.fill(COULEUR_FOND)
+        self.afficher()
+        pygame.display.flip()
+        self.gestion_evenement()
+
+        square = self._grille.getNextSquareUsingHeuristics()
+        valeurs_possibles = list(square.domaine)
+        erreur = True
+        fin = False
+
+        # On teste chaque valeur jusqu'a ce qu'une marche
+        while erreur and len(valeurs_possibles) != 0:
+            square.valeur_saisie = random.choice(valeurs_possibles)
+            try:
+                self._grille.validate()
+                erreur = False
+            except:
+                valeurs_possibles.remove(square.valeur_saisie)
+                erreur = True
+
+        # Si aucune ne marche, on retourne False. La grille n'a pas de solutions en l'état
+        if erreur:
+            square.valeur_saisie = -1
+            return False
+
+        # Si la grille est fini, on retourne la solution
+        elif self._grille.victoire():
+            return True
+
+        if flag == "FAST":
+            copy = Grille(grid=self._grille)
+            #self.forwardResearch(i,j)
+
+        # Partie recursive
+        while not(fin) and len(valeurs_possibles) != 0:
+
+            fin = self.solver(flag)
+
+            if not(fin):
+                valeurs_possibles.remove(square.valeur_saisie)
+                if len(valeurs_possibles) != 0:
+                    square.valeur_saisie = random.choice(valeurs_possibles)
+
+        if fin:
+            return True
+        else:
+            square.valeur_saisie = -1
+            if flag == "FAST":
+                self._grille = copy
+            return False
 
 
-                    
-                        
 
+    def forwardResearch(self, i, j):
+        """ Implémentation de la recherche en avant """
+        valeur = self._grille[i,j].valeur_saisie
+
+        # On retire cette valeur des valeurs possibles de chaque case de la plage
+        for square in self._grille.ligne(i,j):
+            if valeur in square.domaine:
+                square.domaine.remove(valeur)
+
+        for square in self._grille.colonne(i,j):
+            if valeur in square.domaine:
+                square.domaine.remove(valeur)

@@ -35,7 +35,7 @@ class CaseVide(Widget):
           - erreur: booleen decrivant si le contenu de la case est erronné
     """
 
-    def __init__(self, valeur):
+    def __init__(self, data):
         """ Initialise chacun des attributs:
                 - _solution_case = valeur
                 - valeur_saisie = -1 sera ultérieurement initialisé au cours du jeu
@@ -43,11 +43,21 @@ class CaseVide(Widget):
                 - domaine = un set (ensemble) contenant toutes les valeurs entre 1 et 9.
         """
         Widget.__init__(self)
-        self._solution_case = valeur
-        self.valeur_saisie =  -1
-        self.erreur = False
-        self.domaine = set(range(1,10))
-        self.degre = 0
+        
+        if type(data) is int:
+            self._solution_case = data
+            self.valeur_saisie =  -1
+            self.erreur = False
+            self.domaine = set(range(1,10))
+            self.degre = 0
+
+        elif type(data) is CaseVide:
+            self._solution_case = data._solution_case
+            self.valeur_saisie =  data.valeur_saisie
+            self.erreur = data.erreur
+            self.domaine = set(data.domaine)
+            self.degre = data.degre
+
         
     def __eq__(self, element): 
         """ Méthode permettant de tester l'égalité entre deux cases vides """
@@ -162,19 +172,27 @@ class Indicatrice(Widget):
            - erreur_droite: booléen détérminant si la plage droite contient une erreur
     """
 
-    def __init__(self):
+    def __init__(self, case=None):
         """ Les attribus valeur_bas, valeur_droite sont initialisées a 0.
             Les attributs rect, rect_bas, rect_droite sont initialisés à 0,0.
             Les attributs erreur_bas et erreur_droite sont initialisés a False.
             Ces valeurs seront modifiées ultérieurement, lors de la génération, de la saisie, et de l'affichage de la grille.
         """
         Widget.__init__(self)
-        self.valeur_bas = 0
-        self.valeur_droite = 0
-        self.rect_bas = 0,0
-        self.rect_droite = 0,0
-        self.erreur_droite = False
-        self.erreur_bas = False
+        if case != None:
+            self.valeur_bas = case.valeur_bas
+            self.valeur_droite = case.valeur_droite
+            self.rect_bas = case.rect_bas
+            self.rect_droite = case.rect_droite
+            self.erreur_droite = case.erreur_droite
+            self.erreur_bas = case.erreur_bas
+        else:
+            self.valeur_bas = 0
+            self.valeur_droite = 0
+            self.rect_bas = 0,0
+            self.rect_droite = 0,0
+            self.erreur_droite = False
+            self.erreur_bas = False
 
     def __str__(self):
         """Chaine retournée lors d'une conversion en str ou d'un print"""
