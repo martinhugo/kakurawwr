@@ -13,4 +13,4 @@ This game's features include, but are not limited to :
 
 This application was developed in Python 3.3.5, with Pygame 1.9.2 and PyFPDF.
 
-A Window's installer is available [here](../../releases/latest).
+A Windows installer is available [here](../../releases/latest).
