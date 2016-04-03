@@ -53,6 +53,8 @@ class Editeur:
         self._grille.generer_grille_vide()
 
         self.bouton_menu = boutons.Bouton(TITRE_BOUTON_MENU)
+        self.bouton_generer = boutons.Bouton(TITRE_BOUTON_GENERER)
+
         self.bouton_reset = boutons.Bouton(TITRE_BOUTON_RESET)
         self.bouton_verif = boutons.Bouton(TITRE_BOUTON_VERIF)
         self.bouton_jouer = boutons.Bouton(TITRE_BOUTON_JOUER)
@@ -81,6 +83,8 @@ class Editeur:
         noire_img = pygame.image.load(CHEMIN_IMAGE_MODE_CASENOIRE).convert_alpha()
 
         self.bouton_menu.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_RETOUR)
+        self.bouton_generer.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_GENERER)
+
         self.bouton_reset.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_RESET)
         self.bouton_verif.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_SAUVEGARDE)
         self.bouton_jouer.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_JOUER_EDITEUR)
@@ -168,6 +172,10 @@ class Editeur:
                         
                     elif self.bouton_reset.clicked(curseur):
                         self._grille.generer_grille_vide()
+
+                    elif self.bouton_generer.clicked(curseur):
+                        self._grille = grille.Grille()
+                        self._grille.generer_grille("difficile")
 
                     elif self.bouton_verif.clicked(curseur):
                         if not(self.erreur):

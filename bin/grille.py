@@ -519,15 +519,56 @@ class Grille:
                     somme_fausse = True
                     self[i,j].erreur_droite = True
             
-            else:
+            elif self.solved == False:
                 # On verifie la valeur de l'indicatrice
-                somme = self[i+1,j].valeur_saisie if self[i+1,j].valeur_saisie!=-1 else 0
-                for el in self.ligne(i+1,j):
-                    somme += el.valeur_saisie if el.valeur_saisie !=-1 else 0
+                cpt = 0
+                assigned = set()
+                valeur = self[i+1,j].valeur_saisie
 
+                ## On garde en mémoire les valeurs rencontrées et le nombre de case non remplie
+
+                if valeur == -1:
+                    cpt+=1
+                    valeur = 0
+                else:
+                    assigned.add(valeur)
+                somme = valeur
+
+                for el in self.ligne(i+1,j):
+                    valeur = el.valeur_saisie
+
+                    if valeur == -1:
+                        cpt+=1
+                        valeur = 0
+                    else: 
+                        assigned.add(valeur)
+
+                    somme += valeur
+
+                # Si la somme est plus grande que ce que la solution
                 if somme >= self[i,j].valeur_droite:
                     somme_fausse = True
                     self[i,j].erreur_droite = True
+
+                # Si la somme est plus petite
+                """else:
+                    i = 0
+                    # On prend la valeur max possible
+                    maxValue = 0
+                    while cpt != 0 or i<9:
+                        valeur = 9-i
+                        if valeur not in assigned:
+                            maxValue += valeur
+                            cpt-=1
+                        i+=1
+
+
+                    # Si la somme et la valeur maximale qu'on peut affecter ne suffit pas, il y a une erreur
+                    if somme + maxValue < self[i,j].valeur_droite:
+                        somme_fausse = True
+                        self[i,j].erreur_droite = True"""
+
+
 
         # Si elle a une plage bas
         if j < self.nb_ligne-1  and type(self[i,j+1]) is cases.CaseVide:
@@ -542,15 +583,55 @@ class Grille:
                 if somme != self[i,j].valeur_bas:
                     somme_fausse = True
                     self[i,j].erreur_bas = True
-            else:
-                # On verifie la valeur de l'indicatrice
-                somme = self[i, j+1].valeur_saisie if self[i, j+1].valeur_saisie!=-1 else 0
-                for el in self.colonne(i,j+1):
-                    somme += el.valeur_saisie if el.valeur_saisie !=-1 else 0
 
+            # Si la plage n'est pas remplie
+            elif self.solved == False:
+                 # On verifie la valeur de l'indicatrice
+                cpt = 0
+                assigned = set()
+                
+
+                ## On garde en mémoire les valeurs rencontrées et le nombre de case non remplie
+                valeur = self[i,j+1].valeur_saisie
+                if valeur == -1:
+                    cpt+=1
+                    valeur = 0
+                else:
+                    assigned.add(valeur)
+                somme = valeur
+
+                for el in self.colonne(i,j+1):
+                    valeur = el.valeur_saisie
+
+                    if valeur == -1:
+                        cpt+=1
+                        valeur = 0
+                    else: 
+                        assigned.add(valeur)
+
+                    somme += valeur
+
+                # Si la somme est plus grande que ce que la solution
                 if somme >= self[i,j].valeur_bas:
                     somme_fausse = True
-                    self[i,j].erreur_droite = True
+                    self[i,j].erreur_bas = True
+
+                # Si la somme est plus petite
+                """else:
+                    i = 0
+                    maxValue = 0
+                    # On prend la valeur max possible
+                    while cpt != 0 or i<9:
+                        valeur = 9-i
+                        if valeur not in assigned:
+                            maxValue += valeur
+                            cpt-=1
+                        i+=1
+
+                    # Si la somme et la valeur maximale qu'on peut affecter ne suffit pas, il y a une erreur
+                    if somme + maxValue < self[i,j].valeur_bas:
+                        somme_fausse = True
+                        self[i,j].erreur_bas = True"""
 
 
         return somme_fausse
@@ -573,6 +654,7 @@ class Grille:
         for (i,j) in self.keys():
             if type(self[i,j]) is cases.CaseVide:
                 self[i,j].valeur_saisie = (-1)
+                self[i,j].domaine = set(range(1,10))
 
 
     def victoire(self):
@@ -832,15 +914,15 @@ class Grille:
         result = []
         for (i,j) in self.keys():
             if type(self[i,j]) is cases.CaseVide and self[i,j].valeur_saisie == -1:
-                result.append(self[i,j])
+                result.append(((i,j),self[i,j]))
         return result
 
 
     def getNextSquareUsingHeuristics(self):
         """ Retourne la prochaine case vide de la grille ayant le moins de valeur possibles et le degré de contraintes le plus élevé. """
         result = self.getEmptySquares()
-        result.sort(key= lambda case: case.degre, reverse=True)
-        result.sort(key= lambda case: len(case.domaine))
+        result.sort(key= lambda case: case[1].degre, reverse=True)
+        result.sort(key= lambda case: len(case[1].domaine))
         return result[0]
 
 

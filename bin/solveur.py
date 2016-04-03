@@ -48,6 +48,7 @@ class Solveur:
         self._grille = grille
         self.bouton_abandon = boutons.Bouton(TITRE_BOUTON_ABANDON)
 
+
         self.bouton_simple = boutons.Bouton(TITRE_BOUTON_SOLVEUR_SIMPLE)
         self.bouton_moyen = boutons.Bouton(TITRE_BOUTON_SOLVEUR_MOYEN)
         self.bouton_complexe = boutons.Bouton(TITRE_BOUTON_SOLVEUR_COMPLEXE)
@@ -326,7 +327,7 @@ class Solveur:
         pygame.display.flip()
         self.gestion_evenement()
 
-        square = self._grille.getNextSquareUsingHeuristics()
+        (i,j), square = self._grille.getNextSquareUsingHeuristics()
         valeurs_possibles = list(square.domaine)
         erreur = True
         fin = False
@@ -352,7 +353,11 @@ class Solveur:
 
         if flag == "FAST":
             copy = Grille(grid=self._grille)
-            #self.forwardResearch(i,j)
+            self.forwardResearch(i,j)
+            try:
+                self.has_solution()
+            except:
+                return False
 
         # Partie recursive
         while not(fin) and len(valeurs_possibles) != 0:
@@ -372,7 +377,7 @@ class Solveur:
                 self._grille = copy
             return False
 
-    def checkArcConsistency(self, grid=self._grille):
+    def checkArcConsistency(self, grid):
         """ returns true if arcs are consistent
             returns false otherwise
         """
@@ -397,7 +402,9 @@ class Solveur:
             return True
 
     def forwardResearch(self, i, j):
-        """ Implémentation de la recherche en avant """
+        """ Implémentation de la recherche en avant. 
+            Retire la valeur saisie actuelle des domaines de toutes les cases de la ligne et de la colonne de la case
+        """
         valeur = self._grille[i,j].valeur_saisie
 
         # On retire cette valeur des valeurs possibles de chaque case de la plage
