@@ -90,8 +90,19 @@ class Grille:
 
         return grille
 
+    def __eq__(self, other):
+        """Action effectuée lors d'un test d'égalité du type a==b"""
+        if isinstance(other, self.__class__) and len(self.items())==len(other.items()):
+            for (i,j) in self.keys():
+                if self[i,j] != other[i,j]:
+                    return False
+            return True
+        else:
+            return False
 
-
+    def __ne__(self, other):
+        """Action effectuée lors d'un test d'ingalité du type a!=b"""
+        return not self.__eq__(other)
 
 
     ############################################################################ Générateurs ############################################################################

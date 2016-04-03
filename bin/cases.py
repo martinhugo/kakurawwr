@@ -63,9 +63,12 @@ class CaseVide(Widget):
         """ Méthode permettant de tester l'égalité entre deux cases vides """
 
         if type(element) is CaseVide:
-            return (self._solution_case == element._solution_case and self.valeur_saisie == element.valeur_saisie)
+            return (self._solution_case == element._solution_case and self.valeur_saisie == element.valeur_saisie and self.domaine==element.domaine)
         else:
             return False
+
+    def __ne__(self, element):
+        return not self.__eq__(element)
             
     def saisie_valeur(self, font_saisie, fenetre):
         """ Cette méthode propose une zone de saisie dans la case, à l'aide de font_saisie.
@@ -149,7 +152,8 @@ class CaseNoire(Widget):
         """ Méthode permettant de tester l'égalité entre deux cases noires"""
         return type(element) == CaseNoire
 
-
+    def __ne__(self, element):
+        return not self.__eq__(element)
 
 
 
@@ -205,6 +209,8 @@ class Indicatrice(Widget):
         else:
             return False
 
+    def __ne__(self, element):
+        return not self.__eq__(element)
 
  
     def affichage(self, fenetre, font_indicatrice, position, img_indicatrice):

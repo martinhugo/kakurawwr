@@ -372,7 +372,29 @@ class Solveur:
                 self._grille = copy
             return False
 
+    def checkArcConsistency(self, grid=self._grille):
+        """ returns true if arcs are consistent
+            returns false otherwise
+        """
+        copy = Grille(grid=grid)
+        for (i,j) in copy.keys() : #on parcourt la grille par indices
+            caseCourante=copy[i,j] #on se souvient de la case courante pour simplifier l'ecriture
+            if type(caseCourante) is cases.CaseVide: # on ne se preoccupe que des cases vides
+                if len(caseCourante.domaine)==0 : # on retourne d'ores et deja faux si on detecte un cas impossible
+                    return False
+                if caseCourante.valeur_saisie==-1 and len(caseCourante.domaine)==1 : # on affecte aux cases vides avec 1 seule valeur possible la valeur en question
+                    caseCourante.valeur_saisie=caseCourante.domaine[0]               # si cette condition est remplie, la prochiane le sera aussi
 
+                if caseCourante.valeur_saisie!=-1 : # on enleve la valeur de la case courante a toutes les cases dans les plages auxquelles appartient la case courante
+                    for case in copy.ligne(i,j):
+                        case.domaine.discard(caseCourante.valeur_saisie)
+                    for case in copy.colonne(i,j):
+                        case.domaine.discard(caseCourante.valeur_saisie)
+
+        if copy!=grid: #if there have been changes, recursively check for arc consistency
+            self.checkArcConsistency(copy)
+        else:
+            return True
 
     def forwardResearch(self, i, j):
         """ Implémentation de la recherche en avant """
