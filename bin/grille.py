@@ -459,7 +459,7 @@ class Grille:
             pos_x += COTE_IMAGE_CASE
 
 
-    def validate(self):
+    def validate(self, solving=False):
         """ Cette méthode Verifie si la grille a une erreur.
 
             Elle verifie que la grille n'a pas de doublon ou de somme incorrecte. 
@@ -485,6 +485,11 @@ class Grille:
             elif type(case_courante)==cases.Indicatrice:
                 case_courante.erreur_bas, case_courante.erreur_droite = False, False
                 erreur = self.has_fausse_somme(i,j)
+
+                if solving:
+                    unfinished_error = self.has_inconsistent_sum(i,j)
+                    erreur = erreur or unfinished_error
+
                 somme_fausse = somme_fausse or erreur
 
         if(doublon and somme_fausse):
@@ -518,14 +523,46 @@ class Grille:
                 if somme != self[i,j].valeur_droite:
                     somme_fausse = True
                     self[i,j].erreur_droite = True
-            
-            elif self.solved == False:
+        
+        # Si elle a une plage bas
+        if j < self.nb_ligne-1  and type(self[i,j+1]) is cases.CaseVide:
+            # Si cette plage n'a pas de case(s) vide(s)
+            if -1 not in self.cases_to_valeur_saisie(self.colonne(i,j+1)) and self[i, j+1].valeur_saisie != -1:
                 # On verifie la valeur de l'indicatrice
+
+                somme = self[i, j+1].valeur_saisie
+                for el in self.colonne(i,j+1):
+                    somme += el.valeur_saisie
+                    
+                if somme != self[i,j].valeur_bas:
+                    somme_fausse = True
+                    self[i,j].erreur_bas = True
+
+        return somme_fausse
+
+
+
+    def has_inconsistent_sum(self, i, j):
+        """ Retourne vrai si la les valeurs remplies de la plage de l'indicatrice ne permettent pas de remplir de manière cohérente la somme.
+            params:
+                i -> coordonnée i de la case indicatrice
+                j -> coordonnée j de la case indicatrice
+            return:
+                Vrai si la somme des valeurs remplis n'est pas cohérente avec la valeur de l'indicatrice
+                Faux sinon.
+        """
+        somme_fausse = False
+
+        # Si elle a une plage droite
+        if i < self.nb_colonne-1  and type(self[i+1, j]) is cases.CaseVide:
+            # Si cette plage n'a pas de case(s) vide(s)
+            if -1 in self.cases_to_valeur_saisie(self.ligne(i+1,j)) or self[i+1,j].valeur_saisie == -1:
+
                 cpt = 0
                 assigned = set()
                 valeur = self[i+1,j].valeur_saisie
 
-                ## On garde en mémoire les valeurs rencontrées et le nombre de case non remplie
+                ## On garde en mémoire les valeurs rencontrées et le nombre de case non remplies
 
                 if valeur == -1:
                     cpt+=1
@@ -551,47 +588,25 @@ class Grille:
                     self[i,j].erreur_droite = True
 
                 # Si la somme est plus petite
-                """else:
-                    i = 0
-                    # On prend la valeur max possible
-                    maxValue = 0
-                    while cpt != 0 or i<9:
-                        valeur = 9-i
-                        if valeur not in assigned:
-                            maxValue += valeur
-                            cpt-=1
-                        i+=1
-
-
+                else:
+                    maxValue = Grille.getMaxValue(cpt, assigned)
                     # Si la somme et la valeur maximale qu'on peut affecter ne suffit pas, il y a une erreur
                     if somme + maxValue < self[i,j].valeur_droite:
                         somme_fausse = True
-                        self[i,j].erreur_droite = True"""
+                        self[i,j].erreur_droite = True
 
 
 
         # Si elle a une plage bas
         if j < self.nb_ligne-1  and type(self[i,j+1]) is cases.CaseVide:
             # Si cette plage n'a pas de case(s) vide(s)
-            if -1 not in self.cases_to_valeur_saisie(self.colonne(i,j+1)) and self[i, j+1].valeur_saisie != -1:
-                # On verifie la valeur de l'indicatrice
+            if -1 in self.cases_to_valeur_saisie(self.colonne(i,j+1)) or self[i, j+1].valeur_saisie == -1:
 
-                somme = self[i, j+1].valeur_saisie
-                for el in self.colonne(i,j+1):
-                    somme += el.valeur_saisie
-                    
-                if somme != self[i,j].valeur_bas:
-                    somme_fausse = True
-                    self[i,j].erreur_bas = True
-
-            # Si la plage n'est pas remplie
-            elif self.solved == False:
-                 # On verifie la valeur de l'indicatrice
                 cpt = 0
                 assigned = set()
                 
 
-                ## On garde en mémoire les valeurs rencontrées et le nombre de case non remplie
+                ## On garde en mémoire les valeurs rencontrées et le nombre de case non remplies
                 valeur = self[i,j+1].valeur_saisie
                 if valeur == -1:
                     cpt+=1
@@ -617,25 +632,31 @@ class Grille:
                     self[i,j].erreur_bas = True
 
                 # Si la somme est plus petite
-                """else:
-                    i = 0
-                    maxValue = 0
-                    # On prend la valeur max possible
-                    while cpt != 0 or i<9:
-                        valeur = 9-i
-                        if valeur not in assigned:
-                            maxValue += valeur
-                            cpt-=1
-                        i+=1
-
+                else:
+                   
+                    maxValue = Grille.getMaxValue(cpt, assigned)
                     # Si la somme et la valeur maximale qu'on peut affecter ne suffit pas, il y a une erreur
                     if somme + maxValue < self[i,j].valeur_bas:
                         somme_fausse = True
-                        self[i,j].erreur_bas = True"""
+                        self[i,j].erreur_bas = True
 
 
         return somme_fausse
 
+    @staticmethod
+    def getMaxValue(cpt, assigned):
+        """ Returns the max value possible in cpt sum without the already assigned value possible """
+        i = 0
+        maxValue = 0
+        # On prend la valeur max possible
+        while cpt != 0:
+            valeur = 9-i
+            if valeur not in assigned:
+                maxValue += valeur
+                cpt-=1
+            i+=1
+
+        return maxValue
 
     def has_doublon(self, i, j):
         """ Cette méthode verifie que la valeur saisie dans la case n'existe pas déja dans cette plage """
@@ -822,7 +843,7 @@ class Grille:
             Le domaine est retourné à la fin de l'itération.
         """
 
-        tab = [el for el in range(1, longueur+1)]
+        tab = list(range(1, longueur+1))
         valeurs_possibles = set()  
         continuer = True
 
@@ -841,6 +862,12 @@ class Grille:
                 if somme == valeur and len(tab) == len(set(tab)):
                     for el in tab:
                         valeurs_possibles.add(el)
+
+                    ## On peut faire un truc style
+                    # valeurs_possibles.add(list(tab))
+                    # on a alors la combinaison des sommes
+                    ## On peut utiliser cette information après pour réduire les domaines
+                    
                     # Si une somme passe on peut arreter et incrémenter la valeur suivante
                     tab[i] = 9
                 tab[i] += 1

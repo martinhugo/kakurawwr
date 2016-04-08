@@ -135,7 +135,7 @@ class Solveur:
 
         else:  
             self.solver(flag)
-            return True
+            #return True
 
     def correction_grille(self):
         """ Méthode permettant de corriger les éventuelles erreurs laissées par l'utilisateur lors de la saisie de la grille. 
@@ -184,7 +184,7 @@ class Solveur:
             while erreur and len(valeurs_possibles) != 0:
                 self._grille[i,j].valeur_saisie = random.choice(valeurs_possibles)
                 try:
-                    self._grille.validate()
+                    self._grille.validate(True)
                     erreur = False
                 except:
                     valeurs_possibles.remove(self._grille[i,j].valeur_saisie)
@@ -336,7 +336,7 @@ class Solveur:
         while erreur and len(valeurs_possibles) != 0:
             square.valeur_saisie = random.choice(valeurs_possibles)
             try:
-                self._grille.validate()
+                self._grille.validate(True)
                 erreur = False
             except:
                 valeurs_possibles.remove(square.valeur_saisie)
@@ -353,7 +353,7 @@ class Solveur:
 
         if flag == "FAST":
             copy = Grille(grid=self._grille)
-            self.forwardResearch(i,j)
+            self.forwardChecking(i,j)
             try:
                 self.has_solution()
             except:
@@ -381,7 +381,7 @@ class Solveur:
         """ returns true if arcs are consistent
             returns false otherwise
         """
-        copy = Grille(grid=grid)
+        """copy = Grille(grid=grid)
         for (i,j) in copy.keys() : #on parcourt la grille par indices
             caseCourante=copy[i,j] #on se souvient de la case courante pour simplifier l'ecriture
             if type(caseCourante) is cases.CaseVide: # on ne se preoccupe que des cases vides
@@ -399,9 +399,35 @@ class Solveur:
         if copy!=grid: #if there have been changes, recursively check for arc consistency
             self.checkArcConsistency(copy)
         else:
-            return True
+            return True"""
 
-    def forwardResearch(self, i, j):
+        """ Version alternative """
+
+        queue = [self._grille[i,j]]
+
+        while len(queue) != 0:
+            caseCourante= queue.pop()
+
+            if len(caseCourante.domaine)==0 : 
+                return False
+
+            if caseCourante.valeur_saisie==-1 and len(caseCourante.domaine)==1 : 
+                caseCourante.valeur_saisie=caseCourante.domaine[0]              
+                valeur = caseCourante.valeur_saisie
+
+                for other in copy.ligne(i,j):                                # Ligne qui pose problème
+                    if valeur in other.domaine:
+                        other.domaine.discard(valeur)
+                        queue.append(other)
+
+                for other in copy.colonne(i,j):                              # Ligne qui pose problème
+                    if valeur in other.domaine:
+                        other.domaine.discard(caseCourante.valeur_saisie)
+                        queue.append(other)
+        return True
+
+
+    def forwardChecking(self, i, j):
         """ Implémentation de la recherche en avant. 
             Retire la valeur saisie actuelle des domaines de toutes les cases de la ligne et de la colonne de la case
         """
@@ -411,7 +437,9 @@ class Solveur:
         for square in self._grille.ligne(i,j):
             if valeur in square.domaine:
                 square.domaine.remove(valeur)
+                print(valeur, "value removed")
 
         for square in self._grille.colonne(i,j):
             if valeur in square.domaine:
                 square.domaine.remove(valeur)
+                print(valeur, "value removed")
