@@ -121,10 +121,7 @@ class Grille:
 
 
 
-
-
-    def colonne(self, x, y):
-        """Retourne un générateur sur l'ensemble des CasesVides de la plage colonne à laquelle la case appartient"""
+    def colonneIndices(self, x,y):
         #Explore le bas de la colonne
         i = 1
         continuer = True
@@ -139,7 +136,7 @@ class Grille:
                 continuer = False
                 
             else:
-                yield self[x, y+i]
+                yield x, y+i
                 i += 1
         # Explore le haut de la colonne     
         i = 1
@@ -155,12 +152,18 @@ class Grille:
                 continuer = False
                 
             else:
-                yield self[x, y-i]
+                yield x, y-i
                 i += 1
      
-    
-    
-    def ligne(self, x, y):
+
+
+    def colonne(self, x, y):
+        """Retourne un générateur sur l'ensemble des CasesVides de la plage colonne à laquelle la case appartient"""
+        #Explore le bas de la colonne
+        for indices in self.colonneIndices(x,y):
+            yield self[indices]
+
+    def ligneIndices(self, x, y):
         """Retourne un générateur sur l'ensemble des valeurs de la plage ligne à laquelle la case appartient"""
         #Explore la gauche de la ligne
         i = 1 
@@ -175,7 +178,7 @@ class Grille:
             elif type(self[x+i,y]) in (cases.Indicatrice, cases.CaseNoire): 
                 continuer = False
             else:
-                yield self[x+i, y]
+                yield x+i, y
                 i += 1
         # Explore la droite de la ligne    
         i = 1
@@ -191,8 +194,14 @@ class Grille:
                 continuer = False
                 
             else:
-                yield self[x-i, y]
+                yield x-i, y
                 i += 1
+    
+    
+    def ligne(self, x, y):
+        """Retourne un générateur sur l'ensemble des valeurs de la plage ligne à laquelle la case appartient"""
+        for indices in self.ligneIndices(x,y):
+            yield self[indices]
         
 
     @staticmethod
@@ -844,7 +853,7 @@ class Grille:
         """
 
         tab = list(range(1, longueur+1))
-        valeurs_possibles = set()  
+        valeurs_possibles = list()
         continuer = True
 
 
@@ -860,11 +869,11 @@ class Grille:
 
                 # Si la somme est égale à la valeur et qu'il n'y a pas de doublons
                 if somme == valeur and len(tab) == len(set(tab)):
-                    for el in tab:
-                        valeurs_possibles.add(el)
-
                     ## On peut faire un truc style
-                    # valeurs_possibles.add(list(tab))
+                    result = list(tab)
+                    result.sort()
+                    if result not in valeurs_possibles:
+                        valeurs_possibles.append(result)
                     # on a alors la combinaison des sommes
                     ## On peut utiliser cette information après pour réduire les domaines
                     
@@ -899,20 +908,21 @@ class Grille:
                 self[i,j].valeur_saisie = -1
     
 
-    def has_indicatrice(self, i, j):
+    def get_indicatrices(self, i, j):
         """ Méthode permettant de verifier qu'une case vide appartient bien à une plage et dépend bien d'une indicatrice.
             Le haut et la gauche de la plage à laquelle elle appartient sont parcourus.
             Si une indicatrice est trouvée, dans l'une de ces directions, la méthode retourne True. 
         """
 
-        in_plage = False
+        indicatrice_bas = None
+        indicatrice_droite = None
 
         # Parcours de la plage haut
         indice_ligne = j
         while indice_ligne > 0 and type(self[i, indice_ligne]) is cases.CaseVide:
             indice_ligne -= 1
             if type(self[i, indice_ligne]) is cases.Indicatrice:
-                in_plage = True
+                indicatrice_droite = self[i, indice_ligne]
             
 
         # Parcours de la plage bas
@@ -920,10 +930,9 @@ class Grille:
         while indice_colonne > 0 and type(self[indice_colonne, j]) is cases.CaseVide:
             indice_colonne -= 1
             if type(self[indice_colonne, j]) is cases.Indicatrice:
-                in_plage = True
+                indicatrice_bas = self[indice_colonne, j]
 
-
-        return in_plage
+        return indicatrice_droite, indicatrice_bas
 
 
     def initDegre(self):
@@ -952,6 +961,28 @@ class Grille:
         result.sort(key= lambda case: len(case[1].domaine))
         return result[0]
 
+    def forwardChecking(self, i, j):
+        """ Implémentation de la recherche en avant. 
+            Retire la valeur saisie actuelle des domaines de toutes les cases de la ligne et de la colonne de la case considérée.
+            Retire ensuite l'ensemble des combinaisons de sommes des indicatrices correspondantes ne contenant pas la valeur choisie.
+        """
+        valeur = self[i,j].valeur_saisie
+
+        # On retire cette valeur des valeurs possibles de chaque case de la plage
+        for square in self.ligne(i,j):
+            if valeur in square.domaine:
+                square.domaine.remove(valeur)
+
+        for square in self.colonne(i,j):
+            if valeur in square.domaine:
+                square.domaine.remove(valeur)
+
+        indicatrice_bas, indicatrice_droite = self.get_indicatrices(i,j)
+
+        if indicatrice_bas != None:
+            indicatrice_bas.domaine_bas = [comb for comb in indicatrice_bas.domaine_bas if valeur in comb]
+        if indicatrice_droite != None:
+            indicatrice_droite.domaine_droite = [comb for comb in indicatrice_droite.domaine_droite if valeur in comb]
 
 
 

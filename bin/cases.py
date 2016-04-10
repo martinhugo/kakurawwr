@@ -190,6 +190,8 @@ class Indicatrice(Widget):
             self.rect_droite = case.rect_droite
             self.erreur_droite = case.erreur_droite
             self.erreur_bas = case.erreur_bas
+            self.domaine_bas = [list(el) for el in case.domaine_bas]
+            self.domaine_droite = [list(el) for el in case.domaine_droite]
         else:
             self.valeur_bas = 0
             self.valeur_droite = 0
@@ -197,6 +199,8 @@ class Indicatrice(Widget):
             self.rect_droite = 0,0
             self.erreur_droite = False
             self.erreur_bas = False
+            self.domaine_bas = []
+            self.domaine_droite = []
 
     def __str__(self):
         """Chaine retournée lors d'une conversion en str ou d'un print"""

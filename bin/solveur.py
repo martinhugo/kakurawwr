@@ -148,7 +148,7 @@ class Solveur:
             pygame.display.flip()
             self.gestion_evenement()
 
-            if type(self._grille[i,j]) is cases.CaseVide and not(self._grille.has_indicatrice(i,j)):
+            if type(self._grille[i,j]) is cases.CaseVide and self._grille.get_indicatrices(i,j) == (None, None):
                 self._grille[i,j] = cases.CaseNoire()
 
 
@@ -258,23 +258,30 @@ class Solveur:
                 if self._grille[i,j].valeur_droite != 0:
                     # Calcul du nouveau domaine possible
                     longueur_droite = Grille.longueur(self._grille.ligne(i+1,j)) + 1
-                    domaine_droite = Grille.get_domaine(self._grille[i,j].valeur_droite, longueur_droite)
+                    self._grille[i,j].domaine_droite = Grille.get_domaine(self._grille[i,j].valeur_droite, longueur_droite)
+                    
+                    domaine = [nb for sousliste in self._grille[i,j].domaine_droite for nb in sousliste]
+                    domaine = set(domaine)
 
                     # Intersection entre domaines
-                    self._grille[i+1, j].domaine = set.intersection(self._grille[i+1,j].domaine, domaine_droite)
+                    self._grille[i+1, j].domaine = set.intersection(self._grille[i+1,j].domaine, domaine)
                     for el in self._grille.ligne(i+1, j):
-                            el.domaine = set.intersection(el.domaine,domaine_droite)
+                            el.domaine = set.intersection(el.domaine,domaine)
 
                 if self._grille[i,j].valeur_bas != 0:
                     # Calcul du nouveau domaine possible
                     longueur_bas = Grille.longueur(self._grille.colonne(i,j+1)) + 1
-                    domaine_bas = Grille.get_domaine(self._grille[i,j].valeur_bas, longueur_bas)
+                    self._grille[i,j].domaine_bas = Grille.get_domaine(self._grille[i,j].valeur_bas, longueur_bas)
+
+                    domaine = [nb for sousliste in self._grille[i,j].domaine_bas for nb in sousliste]
+                    domaine = set(domaine)
 
                     # Intersection des domaines
-                    self._grille[i,j+1].domaine = set.intersection(self._grille[i,j+1].domaine, domaine_bas)
+                    self._grille[i,j+1].domaine = set.intersection(self._grille[i,j+1].domaine, domaine)
                     for el in self._grille.colonne(i, j+1):
-                            el.domaine = set.intersection(el.domaine,domaine_bas)
+                            el.domaine = set.intersection(el.domaine,domaine)
 
+                print("Domaine de l'indicatrice:\n", self._grille[i,j].domaine_droite, "\n", self._grille[i,j].domaine_bas)
 
 
     def has_solution(self):
@@ -289,6 +296,16 @@ class Solveur:
         for (i,j) in self._grille.keys():
             if type(self._grille[i,j]) is cases.CaseVide:
                 if len(self._grille[i,j].domaine) == 0 and self._grille[i,j].valeur_saisie == -1:
+                    raise NoSolutionException()
+
+            if type(self._grille[i,j]) is cases.Indicatrice:
+                indicatrice = self._grille[i,j]
+                if indicatrice.valeur_bas != 0 and len(indicatrice.domaine_bas) == 0:
+                    print("bas vide")
+                    raise NoSolutionException()
+
+                elif indicatrice.valeur_droite != 0 and len(indicatrice.domaine_droite) == 0:
+                    print("droite vide")
                     raise NoSolutionException()
 
 
@@ -337,9 +354,16 @@ class Solveur:
             square.valeur_saisie = random.choice(valeurs_possibles)
             try:
                 self._grille.validate(True)
+                copy = Grille(grid=self._grille)
+                if flag == "FAST":
+                    self._grille.forwardChecking(i,j)
+                    #self.checkArcConsistency(i,j)
+                    self.has_solution()
                 erreur = False
             except:
                 valeurs_possibles.remove(square.valeur_saisie)
+                if flag == "FAST":
+                    self._grille = copy
                 erreur = True
 
         # Si aucune ne marche, on retourne False. La grille n'a pas de solutions en l'état
@@ -350,14 +374,6 @@ class Solveur:
         # Si la grille est fini, on retourne la solution
         elif self._grille.victoire():
             return True
-
-        if flag == "FAST":
-            copy = Grille(grid=self._grille)
-            self.forwardChecking(i,j)
-            try:
-                self.has_solution()
-            except:
-                return False
 
         # Partie recursive
         while not(fin) and len(valeurs_possibles) != 0:
@@ -373,73 +389,36 @@ class Solveur:
             return True
         else:
             square.valeur_saisie = -1
-            if flag == "FAST":
-                self._grille = copy
             return False
 
-    def checkArcConsistency(self, grid):
+    def checkArcConsistency(self, i, j):
         """ returns true if arcs are consistent
             returns false otherwise
         """
-        """copy = Grille(grid=grid)
-        for (i,j) in copy.keys() : #on parcourt la grille par indices
-            caseCourante=copy[i,j] #on se souvient de la case courante pour simplifier l'ecriture
-            if type(caseCourante) is cases.CaseVide: # on ne se preoccupe que des cases vides
-                if len(caseCourante.domaine)==0 : # on retourne d'ores et deja faux si on detecte un cas impossible
-                    return False
-                if caseCourante.valeur_saisie==-1 and len(caseCourante.domaine)==1 : # on affecte aux cases vides avec 1 seule valeur possible la valeur en question
-                    caseCourante.valeur_saisie=caseCourante.domaine[0]               # si cette condition est remplie, la prochiane le sera aussi
 
-                if caseCourante.valeur_saisie!=-1 : # on enleve la valeur de la case courante a toutes les cases dans les plages auxquelles appartient la case courante
-                    for case in copy.ligne(i,j):
-                        case.domaine.discard(caseCourante.valeur_saisie)
-                    for case in copy.colonne(i,j):
-                        case.domaine.discard(caseCourante.valeur_saisie)
-
-        if copy!=grid: #if there have been changes, recursively check for arc consistency
-            self.checkArcConsistency(copy)
-        else:
-            return True"""
-
-        """ Version alternative """
-
-        queue = [self._grille[i,j]]
+        queue = [((i,j),self._grille[i,j])]
 
         while len(queue) != 0:
-            caseCourante= queue.pop()
+            index, caseCourante= queue.pop()
 
             if len(caseCourante.domaine)==0 : 
                 return False
 
-            if caseCourante.valeur_saisie==-1 and len(caseCourante.domaine)==1 : 
-                caseCourante.valeur_saisie=caseCourante.domaine[0]              
+            if caseCourante.valeur_saisie==-1 and len(caseCourante.domaine)==1:
+
+                caseCourante.valeur_saisie=caseCourante.domaine[0]  
                 valeur = caseCourante.valeur_saisie
 
-                for other in copy.ligne(i,j):                                # Ligne qui pose problème
+                for otherIndex in copy.ligneIndices(*index):  
+                    other = self._grille[otherIndex]                         
                     if valeur in other.domaine:
                         other.domaine.discard(valeur)
-                        queue.append(other)
+                        queue.append((otherIndex, other))
 
-                for other in copy.colonne(i,j):                              # Ligne qui pose problème
+                for otherIndex in copy.colonne(*index):  
+                    other = self._grille[otherIndex]                                    
                     if valeur in other.domaine:
                         other.domaine.discard(caseCourante.valeur_saisie)
-                        queue.append(other)
+                        queue.append((otherIndex, other))
         return True
 
-
-    def forwardChecking(self, i, j):
-        """ Implémentation de la recherche en avant. 
-            Retire la valeur saisie actuelle des domaines de toutes les cases de la ligne et de la colonne de la case
-        """
-        valeur = self._grille[i,j].valeur_saisie
-
-        # On retire cette valeur des valeurs possibles de chaque case de la plage
-        for square in self._grille.ligne(i,j):
-            if valeur in square.domaine:
-                square.domaine.remove(valeur)
-                print(valeur, "value removed")
-
-        for square in self._grille.colonne(i,j):
-            if valeur in square.domaine:
-                square.domaine.remove(valeur)
-                print(valeur, "value removed")
