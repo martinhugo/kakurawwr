@@ -301,11 +301,9 @@ class Solveur:
             if type(self._grille[i,j]) is cases.Indicatrice:
                 indicatrice = self._grille[i,j]
                 if indicatrice.valeur_bas != 0 and len(indicatrice.domaine_bas) == 0:
-                    print("bas vide")
                     raise NoSolutionException()
 
                 elif indicatrice.valeur_droite != 0 and len(indicatrice.domaine_droite) == 0:
-                    print("droite vide")
                     raise NoSolutionException()
 
 
@@ -338,59 +336,56 @@ class Solveur:
 
     def solver(self, flag):
         """ Solveur utilisant un algorithme à backtrack recherche, en utilisant les heuristiques MRV et degré """
-        self.change_message()
-        self._fenetre.fill(COULEUR_FOND)
-        self.afficher()
-        pygame.display.flip()
-        self.gestion_evenement()
+
 
         (i,j), square = self._grille.getNextSquareUsingHeuristics()
         valeurs_possibles = list(square.domaine)
         erreur = True
-        fin = False
+        fini = False
 
         # On teste chaque valeur jusqu'a ce qu'une marche
-        while erreur and len(valeurs_possibles) != 0:
+        while not fini and len(valeurs_possibles) != 0:
+            # Affichage
+            self.change_message()
+            self._fenetre.fill(COULEUR_FOND)
+            self.afficher()
+            pygame.display.flip()
+            self.gestion_evenement()
+
             square.valeur_saisie = random.choice(valeurs_possibles)
-            try:
-                self._grille.validate(True)
-                copy = Grille(grid=self._grille)
-                if flag == "FAST":
-                    self._grille.forwardChecking(i,j)
-                    #self.checkArcConsistency(i,j)
-                    self.has_solution()
-                erreur = False
-            except:
+            print(valeurs_possibles)
+            copy = Grille(grid=self._grille)
+            erreur = self.postTreatment(flag, i,j)
+
+            if not erreur:
+                fini =  self._grille.victoire() or self.solver(flag)
+
+            if erreur or not fini:
                 valeurs_possibles.remove(square.valeur_saisie)
-                if flag == "FAST":
-                    self._grille = copy
-                erreur = True
-
-        # Si aucune ne marche, on retourne False. La grille n'a pas de solutions en l'état
-        if erreur:
+                self._grille = copy
+                
+        if not fini:
             square.valeur_saisie = -1
-            return False
+        
+        return fini
 
-        # Si la grille est fini, on retourne la solution
-        elif self._grille.victoire():
-            return True
+    def postTreatment(self, flag, i, j):
+        """ Verifies that the grid is correct.
+            Applies forward and arc consistency checking and verifies that there is no empty domain.
+            params: 
+                i,j -> coordinates of the current square
+        """
+        try:
+            self._grille.validate(True)
+            if flag == "FAST":
+                self._grille.forwardChecking(i,j)
+                #self.checkArcConsistency(i,j)
+                self.has_solution()
+            erreur = False
+        except Exception as e:
+            erreur = True
 
-        # Partie recursive
-        while not(fin) and len(valeurs_possibles) != 0:
-
-            fin = self.solver(flag)
-
-            if not(fin):
-                valeurs_possibles.remove(square.valeur_saisie)
-                if len(valeurs_possibles) != 0:
-                    square.valeur_saisie = random.choice(valeurs_possibles)
-
-        if fin:
-            return True
-        else:
-            square.valeur_saisie = -1
-            return False
-
+        return erreur
     def checkArcConsistency(self, i, j):
         """ returns true if arcs are consistent
             returns false otherwise
