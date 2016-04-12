@@ -144,7 +144,7 @@ class Solveur:
 
         else:  
             self.solver(flag)
-            return True
+            #return True
 
     def correction_grille(self):
         """ Méthode permettant de corriger les éventuelles erreurs laissées par l'utilisateur lors de la saisie de la grille. 
@@ -355,7 +355,6 @@ class Solveur:
             square.valeur_saisie = random.choice(valeurs_possibles)
             copy = Grille(grid=self._grille)
             erreur = self.postTreatment(flag, i,j)
-
             self.updateDisplaying()
 
             if not erreur:
@@ -380,10 +379,11 @@ class Solveur:
             self._grille.validate(True)
             if flag == "FAST":
                 self._grille.forwardChecking(i,j)
-                #self.checkArcConsistency(i,j)
+                self.checkArcConsistency(i,j)
                 self.has_solution()
             erreur = False
         except Exception as e:
+            print(e)
             erreur = True
 
         return erreur
@@ -395,19 +395,18 @@ class Solveur:
         """
 
         queue = [((i,j),self._grille[i,j])]
-
         while len(queue) != 0:
             index, caseCourante= queue.pop()
 
             ## Vérification des domaines
-            for otherIndex in self.ligneIndices(*index):  
+            for otherIndex in self._grille.ligneIndices(*index):  
                 self._grille.checkDomain(*otherIndex)
                 
-            for otherIndex in self.colonne(*index):  
+            for otherIndex in self._grille.colonneIndices(*index):  
                 self._grille.checkDomain(*otherIndex)
 
 
-            if caseCourante.valeur_saisie == -1 and len(caseCourante.domaine)==1:
+            """if caseCourante.valeur_saisie == -1 and len(caseCourante.domaine)==1:
 
                 caseCourante.valeur_saisie=caseCourante.domaine[0]  
                 valeur = caseCourante.valeur_saisie
@@ -422,7 +421,7 @@ class Solveur:
                     other = self._grille[otherIndex]                                    
                     if valeur in other.domaine:
                         other.domaine.remove(caseCourante.valeur_saisie)
-                        queue.append((otherIndex, other))
+                        queue.append((otherIndex, other))"""
 
         return True
 

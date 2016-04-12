@@ -597,12 +597,12 @@ class Grille:
                     self[i,j].erreur_droite = True
 
                 # Si la somme est plus petite
-                #else:
-                    #maxValue = Grille.getMaxValue(cpt, assigned)
+                else:
+                    maxValue = Grille.getMaxValue(cpt, assigned)
                     # Si la somme et la valeur maximale qu'on peut affecter ne suffit pas, il y a une erreur
-                    #if somme + maxValue < self[i,j].valeur_droite:
-                        #somme_fausse = True
-                        #self[i,j].erreur_droite = True
+                    if somme + maxValue < self[i,j].valeur_droite:
+                        somme_fausse = True
+                        self[i,j].erreur_droite = True
 
 
 
@@ -641,13 +641,13 @@ class Grille:
                     self[i,j].erreur_bas = True
 
                 # Si la somme est plus petite
-                #else:
+                else:
                    
-                    #maxValue = Grille.getMaxValue(cpt, assigned)
+                    maxValue = Grille.getMaxValue(cpt, assigned)
                     # Si la somme et la valeur maximale qu'on peut affecter ne suffit pas, il y a une erreur
-                    #if somme + maxValue < self[i,j].valeur_bas:
-                        #somme_fausse = True
-                        #self[i,j].erreur_bas = True
+                    if somme + maxValue < self[i,j].valeur_bas:
+                        somme_fausse = True
+                        self[i,j].erreur_bas = True
 
 
         return somme_fausse
@@ -986,17 +986,17 @@ class Grille:
 
 
     def checkDomain(self, i, j):
-        square = self[i,j]                
-        indic_bas, indic_droite = sellf._grille.get_indicatrices(i,j)
+        square = self[i,j]            
+        indic_bas, indic_droite = self.get_indicatrices(i,j)
         domaine = list(square.domaine)
 
         i = 0
         for valeur in domaine:
-            values = [nb for comb in indic_bas.domaine for nb in comb]
-            values += [nb for comb in indic_droit.domaine for nb in comb]
-            values = set(values)
+            values_bas = set([nb for comb in indic_bas.domaine_bas for nb in comb])
+            values_droite = set([nb for comb in indic_droite.domaine_droite for nb in comb])
 
-            if valeur not in value:
+            if valeur not in values_bas or valeur not in values_droite:
+                print(valeur)
                 square.domaine.remove(valeur)
 
                
