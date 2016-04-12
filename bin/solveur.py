@@ -112,6 +112,15 @@ class Solveur:
                         raise AbandonException()
 
 
+    def updateDisplaying(self):
+        """ Update the displaying during the solver exection """
+        # Affichage
+        self.change_message()
+        self._fenetre.fill(COULEUR_FOND)
+        self.afficher()
+        pygame.display.flip()
+        self.gestion_evenement()
+
 
     def calculate_solution(self, flag):
         """ Méthode permettant de calculer la solution d'une grille.
@@ -135,7 +144,7 @@ class Solveur:
 
         else:  
             self.solver(flag)
-            #return True
+            return True
 
     def correction_grille(self):
         """ Méthode permettant de corriger les éventuelles erreurs laissées par l'utilisateur lors de la saisie de la grille. 
@@ -335,9 +344,7 @@ class Solveur:
     
 
     def solver(self, flag):
-        """ Solveur utilisant un algorithme à backtrack recherche, en utilisant les heuristiques MRV et degré """
-
-
+        """ Solveur utilisant un algorithme à recherche en arrière, en utilisant les heuristiques MRV et degré """
         (i,j), square = self._grille.getNextSquareUsingHeuristics()
         valeurs_possibles = list(square.domaine)
         erreur = True
@@ -345,17 +352,11 @@ class Solveur:
 
         # On teste chaque valeur jusqu'a ce qu'une marche
         while not fini and len(valeurs_possibles) != 0:
-            # Affichage
-            self.change_message()
-            self._fenetre.fill(COULEUR_FOND)
-            self.afficher()
-            pygame.display.flip()
-            self.gestion_evenement()
-
             square.valeur_saisie = random.choice(valeurs_possibles)
-            print(valeurs_possibles)
             copy = Grille(grid=self._grille)
             erreur = self.postTreatment(flag, i,j)
+
+            self.updateDisplaying()
 
             if not erreur:
                 fini =  self._grille.victoire() or self.solver(flag)
@@ -363,7 +364,7 @@ class Solveur:
             if erreur or not fini:
                 valeurs_possibles.remove(square.valeur_saisie)
                 self._grille = copy
-                
+
         if not fini:
             square.valeur_saisie = -1
         
@@ -386,6 +387,8 @@ class Solveur:
             erreur = True
 
         return erreur
+
+
     def checkArcConsistency(self, i, j):
         """ returns true if arcs are consistent
             returns false otherwise
@@ -396,24 +399,30 @@ class Solveur:
         while len(queue) != 0:
             index, caseCourante= queue.pop()
 
-            if len(caseCourante.domaine)==0 : 
-                return False
+            ## Vérification des domaines
+            for otherIndex in self.ligneIndices(*index):  
+                self._grille.checkDomain(*otherIndex)
+                
+            for otherIndex in self.colonne(*index):  
+                self._grille.checkDomain(*otherIndex)
 
-            if caseCourante.valeur_saisie==-1 and len(caseCourante.domaine)==1:
+
+            if caseCourante.valeur_saisie == -1 and len(caseCourante.domaine)==1:
 
                 caseCourante.valeur_saisie=caseCourante.domaine[0]  
                 valeur = caseCourante.valeur_saisie
 
-                for otherIndex in copy.ligneIndices(*index):  
+                for otherIndex in self.ligneIndices(*index):  
                     other = self._grille[otherIndex]                         
                     if valeur in other.domaine:
-                        other.domaine.discard(valeur)
+                        other.domaine.remove(valeur)
                         queue.append((otherIndex, other))
 
-                for otherIndex in copy.colonne(*index):  
+                for otherIndex in self.colonne(*index):  
                     other = self._grille[otherIndex]                                    
                     if valeur in other.domaine:
-                        other.domaine.discard(caseCourante.valeur_saisie)
+                        other.domaine.remove(caseCourante.valeur_saisie)
                         queue.append((otherIndex, other))
+
         return True
 

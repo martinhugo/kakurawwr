@@ -192,6 +192,7 @@ class Indicatrice(Widget):
             self.erreur_bas = case.erreur_bas
             self.domaine_bas = [list(el) for el in case.domaine_bas]
             self.domaine_droite = [list(el) for el in case.domaine_droite]
+
         else:
             self.valeur_bas = 0
             self.valeur_droite = 0
