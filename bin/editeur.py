@@ -181,7 +181,7 @@ class Editeur:
                         if not(self.erreur):
                             try:
                                 ecran_solveur = solveur.Solveur(self._fenetre, self._grille)
-                                self.erreur = ecran_solveur.loop()
+                                self._grille = ecran_solveur.loop()
                                 self._grille.confirmer_solution()
                                 self._grille.solved = True
                             except Exception as e:

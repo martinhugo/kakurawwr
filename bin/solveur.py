@@ -106,7 +106,7 @@ class Solveur:
                         result = self.calculate_solution("FAST")
 
                     if result == True:
-                        return MESSAGE_GRILLE_RESOLUE
+                        return self._grille
 
                     elif self.bouton_abandon.clicked(curseur):
                         raise AbandonException()
@@ -364,11 +364,13 @@ class Solveur:
 
             if not erreur:
                 fini =  self._grille.victoire() or self.solver(flag)
-            
+
             if erreur or not fini:
                 valeurs_possibles.remove(square.valeur_saisie)
                 self._grille = copy
                 square = self._grille[i,j]
+
+            print(self._grille)
 
         if not fini:
             square.valeur_saisie = -1
