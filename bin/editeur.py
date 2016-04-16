@@ -175,7 +175,7 @@ class Editeur:
 
                     elif self.bouton_generer.clicked(curseur):
                         self._grille = grille.Grille()
-                        self._grille.generer_grille("difficile")
+                        self._grille.generer_grille("mdft")
 
                     elif self.bouton_verif.clicked(curseur):
                         if not(self.erreur):

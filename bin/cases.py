@@ -118,11 +118,15 @@ class CaseVide(Widget):
         self.rect = pygame.Rect(position, (COTE_IMAGE_CASE, COTE_IMAGE_CASE))
         if self.erreur:
             couleur = COULEUR_ERREUR
+            #if self.valeur_saisie == -1:
+            #    self.valeur_saisie = "/"
         else:
             couleur = COULEUR_POLICE
         if self.valeur_saisie != -1:
             valeur = font_casevide.render(str(self.valeur_saisie), couleur)[0]
             fenetre.blit(valeur, self.rect.move(DECALAGE_SAISIE_CASE_VIDE))
+            #if self.valeur_saisie == "/":
+            #    self.valeur_saisie = -1
                     
 
     def __str__(self):

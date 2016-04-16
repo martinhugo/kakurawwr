@@ -144,7 +144,7 @@ class Solveur:
 
         else:  
             self.solver(flag)
-            #return True
+            return True
 
     def correction_grille(self):
         """ Méthode permettant de corriger les éventuelles erreurs laissées par l'utilisateur lors de la saisie de la grille. 
@@ -305,14 +305,19 @@ class Solveur:
         for (i,j) in self._grille.keys():
             if type(self._grille[i,j]) is cases.CaseVide:
                 if len(self._grille[i,j].domaine) == 0 and self._grille[i,j].valeur_saisie == -1:
+                    self._grille[i,j].erreur = True
                     raise NoSolutionException()
 
             if type(self._grille[i,j]) is cases.Indicatrice:
                 indicatrice = self._grille[i,j]
                 if indicatrice.valeur_bas != 0 and len(indicatrice.domaine_bas) == 0:
+                    print("bas")
+                    indicatrice.erreur_bas = True
                     raise NoSolutionException()
 
                 elif indicatrice.valeur_droite != 0 and len(indicatrice.domaine_droite) == 0:
+                    print("droite")
+                    indicatrice.erreur_droite = True
                     raise NoSolutionException()
 
 
@@ -359,10 +364,11 @@ class Solveur:
 
             if not erreur:
                 fini =  self._grille.victoire() or self.solver(flag)
-
+            
             if erreur or not fini:
                 valeurs_possibles.remove(square.valeur_saisie)
                 self._grille = copy
+                square = self._grille[i,j]
 
         if not fini:
             square.valeur_saisie = -1
