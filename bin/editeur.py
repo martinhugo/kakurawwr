@@ -53,7 +53,9 @@ class Editeur:
         self._grille.generer_grille_vide()
 
         self.bouton_menu = boutons.Bouton(TITRE_BOUTON_MENU)
-        self.bouton_generer = boutons.Bouton(TITRE_BOUTON_GENERER)
+        self.bouton_facile = boutons.Bouton(TITRE_BOUTON_FACILE)
+        self.bouton_moyen = boutons.Bouton(TITRE_BOUTON_MOYEN)
+        self.bouton_difficile = boutons.Bouton(TITRE_BOUTON_DIFFICILE)
 
         self.bouton_reset = boutons.Bouton(TITRE_BOUTON_RESET)
         self.bouton_verif = boutons.Bouton(TITRE_BOUTON_VERIF)
@@ -83,7 +85,9 @@ class Editeur:
         noire_img = pygame.image.load(CHEMIN_IMAGE_MODE_CASENOIRE).convert_alpha()
 
         self.bouton_menu.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_RETOUR)
-        self.bouton_generer.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_GENERER)
+        self.bouton_facile.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_GENERER_FACILE)
+        self.bouton_moyen.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_GENERER_MOYEN)
+        self.bouton_difficile.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_GENERER_DIFFICILE)
 
         self.bouton_reset.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_RESET)
         self.bouton_verif.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_SAUVEGARDE)
@@ -173,7 +177,13 @@ class Editeur:
                     elif self.bouton_reset.clicked(curseur):
                         self._grille.generer_grille_vide()
 
-                    elif self.bouton_generer.clicked(curseur):
+                    elif self.bouton_facile.clicked(curseur):
+                        self._grille = grille.Grille()
+                        self._grille.generer_grille("facile")
+                    elif self.bouton_moyen.clicked(curseur):
+                        self._grille = grille.Grille()
+                        self._grille.generer_grille("moyen")
+                    elif self.bouton_difficile.clicked(curseur):
                         self._grille = grille.Grille()
                         self._grille.generer_grille("mdft")
 
@@ -184,9 +194,11 @@ class Editeur:
                                 self._grille = ecran_solveur.loop()
                                 self._grille.confirmer_solution()
                                 self._grille.solved = True
+                                self.erreur = MESSAGE_GRILLE_RESOLUE
                             except Exception as e:
-                                self._grille.reinitialiser()
                                 self.erreur = e.message_erreur
+
+                            self._grille.reinitialiser()
 
                     elif self.bouton_jouer.clicked(curseur):
                         if not(self.erreur):

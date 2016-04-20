@@ -143,6 +143,7 @@ class Solveur:
             return True
 
         else:  
+            print(flag)
             self.solver(flag)
             return True
 
@@ -311,12 +312,10 @@ class Solveur:
             if type(self._grille[i,j]) is cases.Indicatrice:
                 indicatrice = self._grille[i,j]
                 if indicatrice.valeur_bas != 0 and len(indicatrice.domaine_bas) == 0:
-                    print("bas")
                     indicatrice.erreur_bas = True
                     raise NoSolutionException()
 
                 elif indicatrice.valeur_droite != 0 and len(indicatrice.domaine_droite) == 0:
-                    print("droite")
                     indicatrice.erreur_droite = True
                     raise NoSolutionException()
 
@@ -350,7 +349,11 @@ class Solveur:
 
     def solver(self, flag):
         """ Solveur utilisant un algorithme à recherche en arrière, en utilisant les heuristiques MRV et degré """
-        (i,j), square = self._grille.getNextSquareUsingHeuristics()
+        try:
+            (i,j), square = self._grille.getNextSquareUsingHeuristics()
+        except IndexError:
+            return True
+
         valeurs_possibles = list(square.domaine)
         erreur = True
         fini = False
@@ -366,11 +369,12 @@ class Solveur:
                 fini =  self._grille.victoire() or self.solver(flag)
 
             if erreur or not fini:
-                valeurs_possibles.remove(square.valeur_saisie)
                 self._grille = copy
                 square = self._grille[i,j]
+                valeurs_possibles = [el for el in list(square.domaine) if el in valeurs_possibles]
+                valeurs_possibles.remove(square.valeur_saisie)
 
-            print(self._grille)
+
 
         if not fini:
             square.valeur_saisie = -1
@@ -391,7 +395,6 @@ class Solveur:
                 self.has_solution()
             erreur = False
         except Exception as e:
-            print(e)
             erreur = True
 
         return erreur
