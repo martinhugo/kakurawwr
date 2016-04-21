@@ -391,7 +391,7 @@ class Solveur:
             self._grille.validate(True)
             if flag == "FAST":
                 self._grille.forwardChecking(i,j)
-                self.checkArcConsistency(i,j)
+                self._grille.checkArcConsistency(i,j)
                 self.has_solution()
             erreur = False
         except Exception as e:

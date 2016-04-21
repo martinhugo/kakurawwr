@@ -986,6 +986,7 @@ class Grille:
 
 
     def checkDomain(self, i, j):
+        """ Verifie que la valeur de chaque domaine de chaque vide est consistente avec les décompositions de sommes des indicatrices dont elle dépend. """
         square = self[i,j]            
         indic_bas, indic_droite = self.get_indicatrices(i,j)
         domaine = list(square.domaine)
@@ -1001,6 +1002,16 @@ class Grille:
 
                
 
+    def checkArcConsistency(self, i, j):
+        """ returns true if arcs are consistent
+            returns false otherwise
+        """
+        ## Vérification des domaines
+        for otherIndex in self.ligneIndices(i,j):  
+            self.checkDomain(*otherIndex)
+                
+        for otherIndex in self.colonneIndices(i,j):  
+            self.checkDomain(*otherIndex)
 
 
 
