@@ -143,9 +143,7 @@ class Solveur:
             return True
 
         else:  
-            print(flag)
-            self.solver(flag)
-            return True
+            return self.solver(flag)
 
     def correction_grille(self):
         """ Méthode permettant de corriger les éventuelles erreurs laissées par l'utilisateur lors de la saisie de la grille. 
@@ -351,7 +349,7 @@ class Solveur:
         """ Solveur utilisant un algorithme à recherche en arrière, en utilisant les heuristiques MRV et degré """
         try:
             (i,j), square = self._grille.getNextSquareUsingHeuristics()
-        except IndexError:
+        except IndexError as e:
             return True
 
         valeurs_possibles = list(square.domaine)
@@ -375,7 +373,6 @@ class Solveur:
                 valeurs_possibles.remove(square.valeur_saisie)
 
 
-
         if not fini:
             square.valeur_saisie = -1
         
@@ -395,6 +392,7 @@ class Solveur:
                 self.has_solution()
             erreur = False
         except Exception as e:
+            print(e)
             erreur = True
 
         return erreur

@@ -939,8 +939,17 @@ class Grille:
         """ Initialise le degré de toutes les cases vides """
         for (i,j) in self.keys():
             if type(self[i,j]) is cases.CaseVide:
-                self[i,j].degre = self.longueur(self.ligne(i,j)) + self.longueur(self.colonne(i,j))
+                count = 0
+                for el in Grille.cases_to_valeur_saisie(self.ligne(i,j)):
+                    if el == -1:
+                        count += 1
+                for el in Grille.cases_to_valeur_saisie(self.colonne(i,j)):
+                    if el == -1:
+                        count += 1
 
+                self[i,j].degre = count
+
+                #self[i,j].degre = self.longueur(self.ligne(i,j)) + self.longueur(self.colonne(i,j))
 
     def getEmptySquares(self):
         """ Retourne la liste des cases vides.
@@ -956,6 +965,7 @@ class Grille:
 
     def getNextSquareUsingHeuristics(self):
         """ Retourne la prochaine case vide de la grille ayant le moins de valeur possibles et le degré de contraintes le plus élevé. """
+        self.initDegre()
         result = self.getEmptySquares()
         result.sort(key= lambda case: case[1].degre, reverse=True)
         result.sort(key= lambda case: len(case[1].domaine))
@@ -991,11 +1001,17 @@ class Grille:
         indic_bas, indic_droite = self.get_indicatrices(i,j)
         domaine = list(square.domaine)
 
-        i = 0
-        for valeur in domaine:
+        values_bas = set(list(range(1,10)))
+        values_droite = set(list(range(1,10)))
+
+        if indic_bas is not None:
             values_bas = set([nb for comb in indic_bas.domaine_bas for nb in comb])
+
+        if indic_droite is not None:
             values_droite = set([nb for comb in indic_droite.domaine_droite for nb in comb])
 
+        i = 0
+        for valeur in domaine:
             if valeur not in values_bas or valeur not in values_droite:
                 print(valeur)
                 square.domaine.remove(valeur)
