@@ -1,9 +1,9 @@
-# kakurawwr
-Kakuro game for Windows.
+# Kakurawwr
 
+## Description
 Kakurawwr is a Cross Sums game for Windows.
 
-This application was developed as a university project at Paris-Descartes.
+This application was developed as a university project at Paris-Descartes during our second year of Bachelor in Computer Science.
 
 This game's features include, but are not limited to :
 - playing randomly generated grids
@@ -14,3 +14,7 @@ This game's features include, but are not limited to :
 This application was developed in Python 3.3.5, with Pygame 1.9.2 and PyFPDF.
 
 A Windows installer is available [here](../../releases/latest).
+
+## Solver
+
+This may be an old project, developed when we were still learning basics things in computer science, but the solver is still very interesting. When we started this project, we didn't know nothing about Artificial intelligence and forward checking. 
