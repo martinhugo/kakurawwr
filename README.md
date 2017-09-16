@@ -17,4 +17,4 @@ A Windows installer is available [here](../../releases/latest).
 
 ## Solver
 
-This may be an old project, developed when we were still learning basics things in computer science, but the solver is still very interesting. When we started this project, we didn't know nothing about Artificial intelligence and forward checking. 
+This may be an old project, developed when we were still learning basic things in computer science, but the solver is still very interesting. When we started this project, we didn't know nothing about artificial intelligence. But we ended up implementing a complete forward checking with a lot of used heuristics. Later on, we reworked the project and improved the solver to the point where complex grid are solved in less than a second.
