@@ -2,7 +2,7 @@
 # -*- encoding:utf-8 -*
 
 
-"""Module contenant les classes de Cases 
+"""Module contenant les classes de Cases
 
    Contient les classes suivante:
       - CaseVide
@@ -43,33 +43,32 @@ class CaseVide(Widget):
                 - domaine = un set (ensemble) contenant toutes les valeurs entre 1 et 9.
         """
         Widget.__init__(self)
-        
+
         if type(data) is int:
             self._solution_case = data
-            self.valeur_saisie =  -1
+            self.valeur_saisie = -1
             self.erreur = False
-            self.domaine = set(range(1,10))
+            self.domaine = set(range(1, 10))
             self.degre = 0
 
         elif type(data) is CaseVide:
             self._solution_case = data._solution_case
-            self.valeur_saisie =  data.valeur_saisie
+            self.valeur_saisie = data.valeur_saisie
             self.erreur = data.erreur
             self.domaine = set(data.domaine)
             self.degre = data.degre
 
-        
-    def __eq__(self, element): 
+    def __eq__(self, element):
         """ Méthode permettant de tester l'égalité entre deux cases vides """
 
         if type(element) is CaseVide:
-            return (self._solution_case == element._solution_case and self.valeur_saisie == element.valeur_saisie and self.domaine==element.domaine)
+            return (self._solution_case == element._solution_case and self.valeur_saisie == element.valeur_saisie and self.domaine == element.domaine)
         else:
             return False
 
     def __ne__(self, element):
         return not self.__eq__(element)
-            
+
     def saisie_valeur(self, font_saisie, fenetre):
         """ Cette méthode propose une zone de saisie dans la case, à l'aide de font_saisie.
             La saisie initialise valeur_saisie.
@@ -78,7 +77,7 @@ class CaseVide(Widget):
             La pression de la touche backspace permet d'effacer la saisie.
         """
         # Montre a l'utilisateur qu'il a cliqué une case
-        fenetre.fill(COULEUR_FOND_CASE, self.rect) 
+        fenetre.fill(COULEUR_FOND_CASE, self.rect)
         pygame.display.flip()
 
         while True:
@@ -118,25 +117,19 @@ class CaseVide(Widget):
         self.rect = pygame.Rect(position, (COTE_IMAGE_CASE, COTE_IMAGE_CASE))
         if self.erreur:
             couleur = COULEUR_ERREUR
-            #if self.valeur_saisie == -1:
+            # if self.valeur_saisie == -1:
             #    self.valeur_saisie = "/"
         else:
             couleur = COULEUR_POLICE
         if self.valeur_saisie != -1:
             valeur = font_casevide.render(str(self.valeur_saisie), couleur)[0]
             fenetre.blit(valeur, self.rect.move(DECALAGE_SAISIE_CASE_VIDE))
-            #if self.valeur_saisie == "/":
+            # if self.valeur_saisie == "/":
             #    self.valeur_saisie = -1
-                    
 
     def __str__(self):
         """Chaine retournée lors d'un print ou d'une conversion en str de la classe"""
         return str(self.valeur_saisie)
-
-
-
-
-
 
 
 class CaseNoire(Widget):
@@ -160,14 +153,6 @@ class CaseNoire(Widget):
         return not self.__eq__(element)
 
 
-
-
-
-
-
-
-
-
 class Indicatrice(Widget):
     """ Classe modélisant une case indicatrice, qui indique au joueur les valeurs des blocs rattachés.
         Cette classe contient 3 attributs:
@@ -176,7 +161,7 @@ class Indicatrice(Widget):
            - rect: la surface cliquable de la case.
            - rect_bas: la surface cliquable de l'indication de la plage bas
            - rect_droite: la surface cliquable de l'indication de la plage droite
-           - erreur_bas: booléen déterminant si la plage bas contient une erreur 
+           - erreur_bas: booléen déterminant si la plage bas contient une erreur
            - erreur_droite: booléen détérminant si la plage droite contient une erreur
     """
 
@@ -187,7 +172,7 @@ class Indicatrice(Widget):
             Ces valeurs seront modifiées ultérieurement, lors de la génération, de la saisie, et de l'affichage de la grille.
         """
         Widget.__init__(self)
-        if case != None:
+        if case is not None:
             self.valeur_bas = case.valeur_bas
             self.valeur_droite = case.valeur_droite
             self.rect_bas = case.rect_bas
@@ -200,8 +185,8 @@ class Indicatrice(Widget):
         else:
             self.valeur_bas = 0
             self.valeur_droite = 0
-            self.rect_bas = 0,0
-            self.rect_droite = 0,0
+            self.rect_bas = 0, 0
+            self.rect_droite = 0, 0
             self.erreur_droite = False
             self.erreur_bas = False
             self.domaine_bas = []
@@ -221,7 +206,6 @@ class Indicatrice(Widget):
     def __ne__(self, element):
         return not self.__eq__(element)
 
- 
     def affichage(self, fenetre, font_indicatrice, position, img_indicatrice):
         """ Affiche l'img_case_vide à la position passée en arguments dans la fenetre passée en arguments.
             Les valeurs de l'indicatrice sont affichées grâce a font_indicatrice.
@@ -240,7 +224,7 @@ class Indicatrice(Widget):
             couleur = COULEUR_POLICE
 
         # Position de la valeur droite
-        valeur_droite = font_indicatrice.render(str(self.valeur_droite),  couleur)[0]
+        valeur_droite = font_indicatrice.render(str(self.valeur_droite), couleur)[0]
         self.rect_droite = self.get_rect_valeur(DECALAGE_INDICATRICE_VALDROITE)
         fenetre.blit(valeur_droite, self.rect_droite)
 
@@ -249,38 +233,34 @@ class Indicatrice(Widget):
         else:
             couleur = COULEUR_POLICE
 
-        #Position de la valeur bas
+        # Position de la valeur bas
         valeur_bas = font_indicatrice.render(str(self.valeur_bas), couleur)[0]
         self.rect_bas = self.get_rect_valeur(DECALAGE_INDICATRICE_VALBAS)
         fenetre.blit(valeur_bas, self.rect_bas)
 
-        
     def get_rect_valeur(self, decalage):
         """ Permet de calculer la position des rect de saisie en fonction du décalage passée en argument. """
         rect = self.rect.move(decalage)
         pos_x, pos_y = rect.left, rect.top
         return pygame.Rect((pos_x, pos_y), DIMENSION_SAISIE_INDICATRICE)
 
-
     def clicked_bas(self, curseur):
-        """ Verifie si la zone de saisie bas a été cliquée. 
+        """ Verifie si la zone de saisie bas a été cliquée.
             Prend curseur, un argument de type rect et verifie si son attribut rect le contient.
             Appelé sur un événement MOUSEBUTTONUP.
         """
         return self.rect_bas.contains(curseur)
 
     def clicked_droite(self, curseur):
-        """ Verifie si la zone de saisie droite a été cliquée. 
+        """ Verifie si la zone de saisie droite a été cliquée.
             Prend curseur, un argument de type rect et verifie si son attribut rect le contient.
             Appelé sur un événement MOUSEBUTTONUP.
         """
         return self.rect_droite.contains(curseur)
 
-
-
     def saisie(self, fenetre, font_saisie, position):
         """ Fonction permettant de saisir, au clavier, la valeur droite de l'indicatrice.
-            Le paramètre position permet de parametre a quel endroit sera saisie la valeur. 
+            Le paramètre position permet de parametre a quel endroit sera saisie la valeur.
             Ce paramètre peut avoir les valeurs "bas" et "droite".
             La valeur sera affichée sur la fenetre, grâce au font_saisie.
             Le rect ou sera affichée la valeur est détérminé en fonction du paramètre position.
@@ -288,7 +268,7 @@ class Indicatrice(Widget):
         if position == SAISIE_BAS:
             rect = self.rect_bas
 
-        else: 
+        else:
             rect = self.rect_droite
 
         valeur = ""
@@ -319,4 +299,3 @@ class Indicatrice(Widget):
             return int(valeur)
         else:
             return -1
-

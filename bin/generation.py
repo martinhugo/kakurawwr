@@ -24,6 +24,7 @@ import grille
 import jeu
 from constantes import *
 
+
 class Generation:
     """ Classe Generation, modélise l'écran de choix de difficulté et génère la grille.
         Cette classe possède 4 attributs:
@@ -41,13 +42,11 @@ class Generation:
         """
 
         self._fenetre = fenetre
-        self.bouton_retour = boutons.Bouton(TITRE_BOUTON_MENU)        
+        self.bouton_retour = boutons.Bouton(TITRE_BOUTON_MENU)
         self.bouton_facile = boutons.Bouton(TITRE_BOUTON_FACILE)
         self.bouton_moyen = boutons.Bouton(TITRE_BOUTON_MOYEN)
         self.bouton_difficile = boutons.Bouton(TITRE_BOUTON_DIFFICILE)
         self.bouton_mdft = boutons.Bouton(TITRE_BOUTON_MDFT)
-
-
 
     def afficher(self):
         """ Méthode permettant d'afficher le menu à l'écran.
@@ -57,12 +56,11 @@ class Generation:
         self._fenetre.fill(COULEUR_FOND)
         titre_bouton = pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_BOUTON)
         bouton_img = pygame.image.load(CHEMIN_IMAGE_BOUTON).convert_alpha()
-        self.bouton_retour.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_RETOUR)                                        
+        self.bouton_retour.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_RETOUR)
         self.bouton_facile.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_FACILE)
         self.bouton_moyen.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_MOYEN)
         self.bouton_difficile.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_DIFFICILE)
         self.bouton_mdft.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_MDFT)
-
 
     def choisir_difficulte(self):
         """ Méthode permettant au joueur de choisir sa difficulté par l'intermédiaire d'une boucle événementielle.
@@ -70,48 +68,41 @@ class Generation:
         """
         # Boucle infinie
         while True:
-            
+
             self._fenetre.fill(COULEUR_FOND)
             self.afficher()
             pygame.display.flip()
 
             ecran_jeu = jeu.Jeu(self._fenetre, grille.Grille())
-            
+
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
-                    
+
                 # Traitement des clics boutons
                 elif event.type == MOUSEBUTTONUP and event.button == 1:
-                    
-                    curseur = pygame.Rect(event.pos, (0,0))
+
+                    curseur = pygame.Rect(event.pos, (0, 0))
 
                     if self.bouton_retour.clicked(curseur):
                         return
-                    
+
                     if self.bouton_facile.clicked(curseur):
                         ecran_jeu.grille.generer_grille("facile")
                         ecran_jeu.jouer()
                         return
-                        
+
                     elif self.bouton_moyen.clicked(curseur):
                         ecran_jeu.grille.generer_grille("moyen")
                         ecran_jeu.jouer()
                         return
-                        
+
                     elif self.bouton_difficile.clicked(curseur):
                         ecran_jeu.grille.generer_grille("difficile")
                         ecran_jeu.jouer()
                         return
-                        
+
                     elif self.bouton_mdft.clicked(curseur):
                         ecran_jeu.grille.generer_grille("mdft")
                         ecran_jeu.jouer()
                         return
-
-
-
-    
-        
-        
-        

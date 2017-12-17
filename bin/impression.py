@@ -21,7 +21,6 @@ import pdf
 from constantes import *
 
 
-
 class Impression:
     """ Classe Impression, permet d'implémenter l'Impression.
         Cette classe possède 7 attributs:
@@ -70,7 +69,7 @@ class Impression:
             La méthode attend un événement et lance le fonctionnement associé a cette événement.
             L'utilisateur peut quitter l'impression pour revenir au jeu, ou quitter simplement le jeu.
         """
-        
+
         while True:
 
             self._fenetre.fill(COULEUR_FOND)
@@ -84,18 +83,18 @@ class Impression:
                     pygame.quit()
 
                 if event.type == MOUSEBUTTONUP and event.button == 1:
-                    curseur = pygame.Rect(event.pos, (0,0))
+                    curseur = pygame.Rect(event.pos, (0, 0))
 
                     if self.bouton_retour.clicked(curseur):
                         return
 
                     if self.zone_saisie.clicked(curseur):
                         self.nom_fichier = self.zone_saisie.saisie(self._fenetre, pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_SAISIE))
-                    
+
                     if self.bouton_valider.clicked(curseur):
                         self.valider()
                         return
-                   
+
     def valider(self):
         """ Méthode permettant de valider l'impression.
             La chaine est formatée et la méthode d'impression de la grille est appellée.
@@ -112,5 +111,3 @@ class Impression:
             return True
         else:
             return False
-
-

@@ -74,9 +74,8 @@ class Sauvegarde:
             L'utilisateur peut quitter la sauvegarde pour revenir au jeu, ou quitter simplement le jeu.
             Il peut saisir une chaine, qui sera le nom du fichier de sauvegarde.
         """
-        
-        while True:
 
+        while True:
 
             self._fenetre.fill(COULEUR_FOND)
             self.afficher()
@@ -89,7 +88,7 @@ class Sauvegarde:
                     pygame.quit()
 
                 if event.type == MOUSEBUTTONUP and event.button == 1:
-                    curseur = pygame.Rect(event.pos, (0,0))
+                    curseur = pygame.Rect(event.pos, (0, 0))
 
                     if self.bouton_retour.clicked(curseur):
                         return
@@ -100,7 +99,6 @@ class Sauvegarde:
                     if self.bouton_valider.clicked(curseur):
                         if (self.valider()):
                             return
-
 
     def valider(self):
         """ Méthode permettant de valider la sauvegarde.
@@ -119,7 +117,6 @@ class Sauvegarde:
             return False
 
 
-
 class Chargement:
     """ Classe modélisant le chargement d'une grille.
         Cette classe possède 8 attributs:
@@ -132,7 +129,6 @@ class Chargement:
             - bouton_retour: bouton permettant de revenir au jeu.
             - barre_erreur: zone d'affichage permettant d'afficher les erreurs à l'écran
     """
-
 
     def __init__(self, fenetre):
         """ Initialise les attributs de la classe.
@@ -170,7 +166,6 @@ class Chargement:
 
         self._fenetre.blit(font_saisie.render(self.indication, COULEUR_POLICE)[0], POSITION_INDICATION_CHARGEMENT)
 
-
     def chargement(self):
         """ Méthode permettant de charger la grille.
             La méthode attend un événement et lance le fonctionnement associé à cet evenement.
@@ -178,8 +173,8 @@ class Chargement:
             Il peut saisir un nom, qui sera le nom de fichier à charger.
             La pression du bouton validation lance la méthode validation.
         """
-        
-        erreur_saisie=False
+
+        erreur_saisie = False
         while True:
 
             self._fenetre.fill(COULEUR_FOND)
@@ -187,20 +182,20 @@ class Chargement:
             if erreur_saisie:
                 self.barre_erreur.afficher_erreur(self._fenetre, MESSAGE_ERREUR_NOM_INCORRECT, COULEUR_ERREUR)
             pygame.display.flip()
-            
+
             for event in pygame.event.get():
 
                 if event.type == QUIT:
                     pygame.quit()
 
                 if event.type == MOUSEBUTTONUP and event.button == 1:
-                    curseur = pygame.Rect(event.pos, (0,0))
+                    curseur = pygame.Rect(event.pos, (0, 0))
 
                     if self.bouton_retour.clicked(curseur):
                         return
 
                     if self.zone_saisie.clicked(curseur):
-                        erreur_saisie=False
+                        erreur_saisie = False
                         self.nom_fichier = self.zone_saisie.saisie(self._fenetre, pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_SAISIE))
 
                     if self.bouton_valider.clicked(curseur):
@@ -209,8 +204,7 @@ class Chargement:
                             ecran_jeu.jouer()
                             return
                         else:
-                            erreur_saisie=True
-
+                            erreur_saisie = True
 
     def valider(self):
         """ Méthode permettant de valider la sauvegarde.
@@ -229,8 +223,7 @@ class Chargement:
                 self._grille.solved = self._grille.is_solved()
             except Exception as e:
                 return False
-            
+
             return True
         else:
             return False
-

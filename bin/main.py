@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- encoding: utf-8 -*
 
-""" Module principal du jeu Kakurawwr. 
+""" Module principal du jeu Kakurawwr.
     Le lancement du module provoque le lancement du produit dans son état actuel.
     Actuellement le jeu est entièrement fonctionnel.
 """
@@ -25,7 +25,3 @@ curseur = pygame.Rect(pygame.mouse.get_pos(), (0, 0))
 # Lancement du jeu
 ecran_menu = menu.Menu(fenetre)
 ecran_menu.wait_evenement()
-
-
-
-

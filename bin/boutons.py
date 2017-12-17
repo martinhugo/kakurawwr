@@ -24,7 +24,7 @@ class Widget:
     def __init__(self):
         """ Le constructeur initialise le rect du widget à 0,0
         """
-        self.rect = 0,0
+        self.rect = 0, 0
 
     def clicked(self, curseur):
         """ Verifie si le widget a été cliqué.
@@ -32,8 +32,6 @@ class Widget:
             Est typiquement appelé sur un événement MOUSEBUTTONUP
         """
         return self.rect.contains(curseur)
-
-
 
 
 class Bouton(Widget):
@@ -48,28 +46,22 @@ class Bouton(Widget):
             Il donne à l'attribut texte la valeur du texte passée en paramètre.
         """
         Widget.__init__(self)
-        self.rect_texte = 0,0
+        self.rect_texte = 0, 0
         self.titre = texte
 
     def afficher(self, fenetre, image, font_titre, position):
         """ Affichage de l'image sur la fenetre passée en paramètre à la position spécifiée """
         fenetre.blit(image, position)
-        self.rect =  pygame.Rect(position, (image.get_rect().width, image.get_rect().height))
+        self.rect = pygame.Rect(position, (image.get_rect().width, image.get_rect().height))
         texte = font_titre.render(self.titre, COULEUR_POLICE)[0]
-        
+
         if len(self.titre) > TAILLE_TITRE_COURT:
             self.rect_texte = self.rect.move(DECALAGE_TITRE_BOUTON_LONG)
         else:
             self.rect_texte = self.rect.move(DECALAGE_TITRE_BOUTON_COURT)
         fenetre.blit(texte, self.rect_texte)
 
-        
 
-
-
-
-    
-        
 class BarreErreur:
     """ Classe modélisant une barre de texte, utilisée pour l'affichage d'erreurs.
         Cette barre d'erreur comprend un objet de type Font, permettant d'écrire les erreurs à l'ecran.
@@ -80,20 +72,16 @@ class BarreErreur:
             Prend en paramètre un objet de classe Font permettant d'écrire les erreurs.
         """
         self.font_erreur = font_erreur
-        
+
     def afficher_erreur(self, fenetre, texte, couleur):
         """ Affiche une erreur dans la fenetre à la zone prévue par self.position, dans la couleur passée en argument. 
             Les erreurs sont affichées selon leur longueur en partant de ERREUR_POSITION_DEPART.
             On soustrait à cette valeur la longueur de l'erreur multiplié par FACTEUR_DECALAGE_ERREUR.
             L'erreur est alors correctement positionnée.
         """
-        erreur = self.font_erreur.render(texte, couleur, style = pygame.freetype.STYLE_STRONG)[0]
+        erreur = self.font_erreur.render(texte, couleur, style=pygame.freetype.STYLE_STRONG)[0]
         position_x = ERREUR_POSITION_DEPART - (len(texte) * FACTEUR_DECALAGE_ERREUR)
         fenetre.blit(erreur, (position_x, ERREUR_POSITION_Y))
-
-
-
-
 
 
 class OptionEditeur(Widget):
@@ -107,8 +95,7 @@ class OptionEditeur(Widget):
         """ Initialise l'attribut rect à (0,0) et affecte leurs valeurs par défaut aux attributs graphiques"""
         Widget.__init__(self)
         self.is_enlarged = False
-        self.skew=0
-
+        self.skew = 0
 
     def afficher(self, fenetre, image, position):
         """ Affichage de l'image sur la fenetre passée en paramètre à la position spécifiée """
@@ -117,14 +104,12 @@ class OptionEditeur(Widget):
             image = pygame.transform.rotozoom(image, self.skew, 1.2)
             # on la recentre
             (pos_x, pos_y) = position
-            #Ici, le +5 vient du fait que COTE_IMAGE_CASE_ENLARGED est inexact a cause de la rotation de l'image.
-            decalage = ((COTE_IMAGE_CASE_ENLARGED-COTE_IMAGE_CASE)/2)+5
-            position = (pos_x-decalage, pos_y-decalage)
-        
+            # Ici, le +5 vient du fait que COTE_IMAGE_CASE_ENLARGED est inexact a cause de la rotation de l'image.
+            decalage = ((COTE_IMAGE_CASE_ENLARGED - COTE_IMAGE_CASE) / 2) + 5
+            position = (pos_x - decalage, pos_y - decalage)
+
         fenetre.blit(image, position)
-        self.rect =  pygame.Rect(position, (image.get_rect().width, image.get_rect().height))
-
-
+        self.rect = pygame.Rect(position, (image.get_rect().width, image.get_rect().height))
 
 
 class ZoneSaisie(Widget):
@@ -135,7 +120,7 @@ class ZoneSaisie(Widget):
     def __init__(self):
         """ Initialise l'attribut rect à (0,0) et la valeur à une chaine vide. """
         Widget.__init__(self)
-        self.rect_saisie = (0,0)
+        self.rect_saisie = (0, 0)
         self.valeur = ""
 
     def afficher(self, fenetre, image, font_saisie, position,):
@@ -143,8 +128,8 @@ class ZoneSaisie(Widget):
             Cette méthode met à jour l'attribut rect.
         """
         fenetre.blit(image, position)
-        if (self.rect == 0,0):
-            self.rect =  pygame.Rect(position, (image.get_rect().width, image.get_rect().height))
+        if (self.rect == 0, 0):
+            self.rect = pygame.Rect(position, (image.get_rect().width, image.get_rect().height))
             self.rect_saisie = self.init_rect_saisie()
         affichage_val = font_saisie.render(self.valeur, COULEUR_POLICE)[0]
         fenetre.blit(affichage_val, self.rect_saisie)
@@ -182,5 +167,3 @@ class ZoneSaisie(Widget):
         rect = self.rect.move(DECALAGE_ZONE_SAISIE)
         pos_x, pos_y = rect.left, rect.top
         return pygame.Rect((pos_x, pos_y), DIMENSION_SAISIE_SAUVEGARDE)
-
-

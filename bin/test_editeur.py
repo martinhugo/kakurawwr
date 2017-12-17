@@ -20,10 +20,10 @@ import pygame
 import pygame.freetype
 from pygame.locals import *
 import unittest
-import grille
 import cases
 import editeur
 from constantes import *
+
 
 class EditeurTest(unittest.TestCase):
     """Classe permettant de tester les fonctionnement des méthodes de la classe Editeur"""
@@ -32,12 +32,10 @@ class EditeurTest(unittest.TestCase):
         """ Méthode appellée avant chaque test, permettant d'initialiser le test.
             Une objet editeur, de type Editeur est ajouté.
         """
-        self.editeur = editeur.Editeur((0,0))
-        
-    
+        self.editeur = editeur.Editeur((0, 0))
 
     def test_set_mode(self, mode=MODE_CASEVIDE):
-        """ Méthode permettant de tester le comportement de set_mode. 
+        """ Méthode permettant de tester le comportement de set_mode.
             La méthode set_mode est appelée en passant un mode en paramètre. On verifie que le mode a bien été changé.
             On rappelle cette méthode  avec ce même mode en paramètre, on verifie ensuite que ce mode a bien été annulé.
         """
@@ -60,7 +58,7 @@ class EditeurTest(unittest.TestCase):
 
     def test_zoom_on_option(self, mode=MODE_CASENOIRE):
         """ Méthode permettant de tester le comportement de zoom_on_option.
-            La méthode zoom_on_option sera appelée sur un mode choisi. 
+            La méthode zoom_on_option sera appelée sur un mode choisi.
             On verifiera que le bouton a été marqué comme à zoomer, et que les autres boutons de mode ne l'ont pas été.
             On reappelle la méthode sur ce même mode est on verifie que le bouton n'est plus marqué comme à zoomer.
         """
@@ -71,16 +69,15 @@ class EditeurTest(unittest.TestCase):
         self.editeur.zoom_on_option(mode)
         self.assertFalse(self.editeur.option_casenoire.is_enlarged)
 
-
     def test_randomize_skew(self):
-        """ Méthode permettant de tester le comportement de randomize_skew. 
+        """ Méthode permettant de tester le comportement de randomize_skew.
             La méthode randomize_skew est appellée et la valeur de retour est récupérée.
             Cette valeur doit être entière comprise entre -5 et 5 et différente de 0
         """
         valeur = self.editeur.randomize_skew()
         self.assertEqual(type(valeur), int)
         self.assertFalse(valeur == 0)
-        self.assertTrue(valeur<=5 and valeur>=-5)
+        self.assertTrue(valeur <= 5 and valeur >= -5)
 
     def test_set_erreur(self):
         """ Méthode permettant de tester le comportement de set_erreur.
@@ -109,6 +106,3 @@ if __name__ == "__main__":
     pygame.init()
     pygame.freetype.init()
     unittest.main()
-
-        
-

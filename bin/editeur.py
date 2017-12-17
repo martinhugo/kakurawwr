@@ -6,7 +6,7 @@
     Ce module possède une unique classe Editeur.
 
     Modules importés:
-        - random: utilisé pour des effets graphiques 
+        - random: utilisé pour des effets graphiques
         - pygame: utilisé pour l'affichage
         - boutons: utilisé pour manier les boutons de l'écran
         - cases, grille: utilisés pour la grille de l'editeur
@@ -69,7 +69,6 @@ class Editeur:
         self.erreur = ""
         self.changed = False
 
-
     def afficher(self):
         """ Affiche l'ecran d'edition.
             La méthode afficher de la classe Bouton est utilisée pour afficher les boutons.
@@ -105,12 +104,11 @@ class Editeur:
         else:
             couleur = COULEUR_ERREUR
 
-        self.barre_erreur.afficher_erreur(self._fenetre, self.erreur , couleur)
-
+        self.barre_erreur.afficher_erreur(self._fenetre, self.erreur, couleur)
 
     def edition(self):
         """ Méthode permettant de saisir une grille.
-            Cette méthode est une boucle infinie attendant un événement. 
+            Cette méthode est une boucle infinie attendant un événement.
             En fonction du mode, l'événement peut être une saisie de valeur ou un remplissage.
 
             On peut quitter le jeu ou retourner au menu depuis cette méthode.
@@ -130,29 +128,24 @@ class Editeur:
             except Exception as e:
                 self.erreur = e.message_erreur
 
-
-            
-
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
 
-                ## Clic and drag
+                # Click and drag
                 elif (event.type == MOUSEMOTION and event.buttons[0] == 1):
                     self.set_erreur("clic")
 
                     if self.mode != MODE_SAISIE:
-                        curseur = pygame.Rect(event.pos, (0,0))
+                        curseur = pygame.Rect(event.pos, (0, 0))
                         # Remplissage de la grille avec des cases en fonction du mode
                         self.remplir_case(curseur)
 
-
-
-                ## Clic 
+                # Clic
                 elif event.type == MOUSEBUTTONUP and event.button == 1:
                     self.set_erreur("clic")
 
-                    curseur = pygame.Rect(event.pos, (0,0))
+                    curseur = pygame.Rect(event.pos, (0, 0))
 
                     # Saisie de valeur d'indicatrices
                     if self.mode == MODE_SAISIE:
@@ -173,7 +166,7 @@ class Editeur:
 
                     elif self.bouton_menu.clicked(curseur):
                         return
-                        
+
                     elif self.bouton_reset.clicked(curseur):
                         self._grille.generer_grille_vide()
 
@@ -206,39 +199,33 @@ class Editeur:
                             ecran_jeu.jouer()
                             return
 
-
-
     def remplir_case(self, curseur):
         """ Cette méthode verifie si une case a été cliquée.
             Si c'est le cas elle lui affecte une case dont le type dépend du mode d'édition séléctionné.
             Cette méthode est typiquement appelée pour des événements MOUSEMOTION.
         """
-        for (i,j) in self._grille.keys():
-            if self._grille[i,j].clicked(curseur):
-                self._grille[i,j] = self.get_case()
- 
-
+        for (i, j) in self._grille.keys():
+            if self._grille[i, j].clicked(curseur):
+                self._grille[i, j] = self.get_case()
 
     def saisie_valeur(self, curseur):
         """ Cette méthode verifie si une zone de saisie d'une indicatrice a été cliquée.
             Si c'est le cas, une saisie sur cette zone est lancée et la valeur est récupérée dans l'attribut correspondant à la zone.
         """
-        for (i,j) in self._grille.keys():
-            if type(self._grille[i,j]) is cases.Indicatrice:
+        for (i, j) in self._grille.keys():
+            if type(self._grille[i, j]) is cases.Indicatrice:
 
-                if self._grille[i,j].clicked_droite(curseur):
+                if self._grille[i, j].clicked_droite(curseur):
 
-                    valeur = self._grille[i,j].saisie(self._fenetre, pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_INDICATRICE), SAISIE_DROITE)
+                    valeur = self._grille[i, j].saisie(self._fenetre, pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_INDICATRICE), SAISIE_DROITE)
                     if valeur != -1:
-                        self._grille[i,j].valeur_droite = valeur
+                        self._grille[i, j].valeur_droite = valeur
 
-                elif self._grille[i,j].clicked_bas(curseur):
+                elif self._grille[i, j].clicked_bas(curseur):
 
-                    valeur =  self._grille[i,j].saisie(self._fenetre, pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_INDICATRICE), SAISIE_BAS)
-                    if valeur != -1: 
-                        self._grille[i,j].valeur_bas =  valeur
-
-
+                    valeur = self._grille[i, j].saisie(self._fenetre, pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_INDICATRICE), SAISIE_BAS)
+                    if valeur != -1:
+                        self._grille[i, j].valeur_bas = valeur
 
     def set_mode(self, selected_mode):
         """ Méthode permettant de modifier le mode d'édition en fonction du mode envoyé en paramètres.
@@ -257,7 +244,6 @@ class Editeur:
             return cases.Indicatrice()
         elif self.mode == MODE_CASENOIRE:
             return cases.CaseNoire()
-
 
     def zoom_on_option(self, selected_mode):
         """ Méthode permettant de marquer le bouton de mode à elargir. """
@@ -280,14 +266,14 @@ class Editeur:
         elif selected_mode == MODE_CASENOIRE:
 
             self.option_casenoire.is_enlarged = not self.option_casenoire.is_enlarged
-            self.option_casenoire.skew = self.randomize_skew()  
+            self.option_casenoire.skew = self.randomize_skew()
             self.option_casevide.is_enlarged = False
             self.option_indicatrice.is_enlarged = False
 
     def set_erreur(self, moment):
         """ Méthode permettant de supprimer l'erreur en cours en fonction du moment d'appel et de la valeur de l'erreur """
         if moment == "validation":
-            if self.erreur not in (MESSAGE_ERREUR_NOSOLUTION,MESSAGE_ERREUR_ABANDON, MESSAGE_GRILLE_RESOLUE):
+            if self.erreur not in (MESSAGE_ERREUR_NOSOLUTION, MESSAGE_ERREUR_ABANDON, MESSAGE_GRILLE_RESOLUE):
                 self.erreur = ""
         else:
             if self.erreur in (MESSAGE_ERREUR_NOSOLUTION, MESSAGE_ERREUR_ABANDON, MESSAGE_GRILLE_RESOLUE):

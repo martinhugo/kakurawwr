@@ -14,7 +14,7 @@
 
         -NoSolutionException
         -AbandonException
-        
+
     Ce module importe les modules suivant:
         - constantes: utilisé dans toutes les méthodes
 """
@@ -26,24 +26,21 @@ class DoublonException(Exception):
     """ Classe d'exception utilisée lors d'un doublon sur une case lors du jeu d'une grille.
         Cette classe a un unique attribut message_erreur, initialisé lors du constructeur.
     """
-    
+
     def __init__(self, message=MESSAGE_ERREUR_DOUBLON):
         """ Initialise l'attribut message_erreur avec le texte défini dans le fichier constantes"""
         self.message_erreur = message
 
     def __str__(self):
-        """ Chaine retournée lors de la conversion de l'exception en chaine, ou lorsqu'elle est en paramètre de la fonction print(). """        
+        """ Chaine retournée lors de la conversion de l'exception en chaine, ou lorsqu'elle est en paramètre de la fonction print(). """
         return self.message_erreur
-
-
-
 
 
 class SommeIncorrecteException(Exception):
     """ Classe d'exception utilisée lorsque la somme d'un bloc est incorrecte lors du jeu d'une grille.
         Cette classe a un unique attribut message_erreur, initialisé lors du constructeur.
     """
-    
+
     def __init__(self, message=MESSAGE_ERREUR_SOMME):
         """ Initialise l'attribut message_erreur avec le texte défini dans le fichier constantes"""
         self.message_erreur = message
@@ -52,11 +49,9 @@ class SommeIncorrecteException(Exception):
         return self.message_erreur
 
 
-
-
 class ExceptionMixte(Exception):
     """classe d'exception utilisée quand les deux types d'erreur précédents sont avérés simultanément"""
-    
+
     def __init__(self, message=MESSAGE_ERREUR_MIXTE):
         """ Initialise le constructeur avec le texte défini dans le fichier constantes"""
         self.message_erreur = message
@@ -66,10 +61,8 @@ class ExceptionMixte(Exception):
         return self.message_erreur
 
 
-
-
 class ValeurIncorrecteException(Exception):
-    """ Classe d'exception utilisée lorsque la valeur d'une indicatrice est incorrecte ou incohérente en fonction de la plage qui lui est associée. 
+    """ Classe d'exception utilisée lorsque la valeur d'une indicatrice est incorrecte ou incohérente en fonction de la plage qui lui est associée.
          Cette classe a un unique attribut message_erreur, initialisé lors du constructeur.
     """
 
@@ -83,7 +76,7 @@ class ValeurIncorrecteException(Exception):
 
 
 class BlockedException(Exception):
-    """ Classe d'exception utilisée lorsqu'une indicatrice est bloquée par d'autres indicatrices ou cases noires. 
+    """ Classe d'exception utilisée lorsqu'une indicatrice est bloquée par d'autres indicatrices ou cases noires.
         Cette classe a un unique attribut message_erreur, initialisé dans le constructeur.
     """
 
@@ -94,7 +87,6 @@ class BlockedException(Exception):
     def __str__(self):
         """ Chaine retournée lorsde la conversion de l'exception en chaine, ou lorsqu'elle est en paramètre de la fonction print(). """
         return self.message_erreur
-
 
 
 class NoSolutionException(Exception):
@@ -127,4 +119,3 @@ class AbandonException(Exception):
     def __str__(self):
         """ Chaine retournée lors de la conversion de l'exception en chaine, ou lorsqu'elle est en paramètre de la fonction print(). """
         return self.message_erreur
-

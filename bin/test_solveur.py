@@ -26,6 +26,7 @@ import solveur
 from constantes import *
 from exceptions import *
 
+
 class SolveurTest(unittest.TestCase):
     """Classe permettant de tester les fonctionnement des méthodes de la classe Editeur"""
 
@@ -33,8 +34,8 @@ class SolveurTest(unittest.TestCase):
         """ Méthode appellée avant chaque test, permettant d'initialiser le test.
             Un attribut solveur, contenant un objet de type Solveur est ajouté, pour permettre de tester ses méthodes.
         """
-        self.solveur = solveur.Solveur(0,0)
-        
+        self.solveur = solveur.Solveur(0, 0)
+
     def test_change_message(self):
         """ Methode permettant de tester le comportement de change_message.
             Le message courant est stocké dans une variable. La méthode est appelé pour le compteur initialisé à 1.
@@ -52,7 +53,7 @@ class SolveurTest(unittest.TestCase):
         self.assertTrue(self.solveur.message != message)
 
     def test_correction_grille(self):
-        """ Méthode permettant de tester le comportement de correction_grille. 
+        """ Méthode permettant de tester le comportement de correction_grille.
             Une grille vide est générée, on verifie que toutes ses cases sont bien des cases vides.
             La méthode est appelée, on verifie bien qui suite à l'appel, toutes les cases sont bien des cases noires.
         """
@@ -61,13 +62,13 @@ class SolveurTest(unittest.TestCase):
         self.solveur._grille = grille.Grille()
         self.solveur._grille.generer_grille_vide()
 
-        for (i,j) in self.solveur._grille.keys():
-            self.assertEqual(type(self.solveur._grille[i,j]), cases.CaseVide)
+        for (i, j) in self.solveur._grille.keys():
+            self.assertEqual(type(self.solveur._grille[i, j]), cases.CaseVide)
 
         self.solveur.correction_grille()
 
-        for (i,j) in self.solveur._grille.keys():
-            self.assertEqual(type(self.solveur._grille[i,j]), cases.CaseNoire)
+        for (i, j) in self.solveur._grille.keys():
+            self.assertEqual(type(self.solveur._grille[i, j]), cases.CaseNoire)
 
     def test_has_solution(self):
         """ Méthode permettant de tester le comportement de has_solution.
@@ -75,9 +76,9 @@ class SolveurTest(unittest.TestCase):
 
             Une grille vide est generée.
             Un compteur est initialisé a 0.
-            Pour chacune de ces cases, le domaine est modifié par un set contenant uniquement la valeur du compteur, qui est ensuite incrémenté. 
+            Pour chacune de ces cases, le domaine est modifié par un set contenant uniquement la valeur du compteur, qui est ensuite incrémenté.
             La méthode est appelé et le compteur remis à 0.
-            La grille est à nouveau parcouru. 
+            La grille est à nouveau parcouru.
             La valeur saisie ne doit jamais être -1 et être égale au compteur, qui est ensuite incrémenté.
 
             Le domaine de chacune des cases vides est ensuite initialisé à un set vide.
@@ -89,22 +90,21 @@ class SolveurTest(unittest.TestCase):
         self.solveur._grille.generer_grille_vide()
 
         compteur = 0
-        for (i,j) in self.solveur._grille.keys():
-            self.solveur._grille[i,j].domaine ={compteur}
+        for (i, j) in self.solveur._grille.keys():
+            self.solveur._grille[i, j].domaine = {compteur}
             compteur += 1
 
-        self.solveur.has_solution() 
+        self.solveur.has_solution()
 
         compteur = 0
-        for (i,j) in self.solveur._grille.keys():
-            self.assertTrue(self.solveur._grille[i,j].valeur_saisie == compteur and self.solveur._grille[i,j].domaine == {compteur})
-            self.solveur._grille[i,j].domaine = set()
-            self.solveur._grille[i,j].valeur_saisie = -1
+        for (i, j) in self.solveur._grille.keys():
+            self.assertTrue(self.solveur._grille[i, j].valeur_saisie == compteur and self.solveur._grille[i, j].domaine == {compteur})
+            self.solveur._grille[i, j].domaine = set()
+            self.solveur._grille[i, j].valeur_saisie = -1
             compteur += 1
 
         with self.assertRaises(NoSolutionException):
             self.solveur.has_solution()
-
 
 
 if __name__ == "__main__":

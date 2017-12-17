@@ -35,7 +35,6 @@ class CaseTest(unittest.TestCase):
         self.indicatrice = cases.Indicatrice()
         self.case_noire = cases.CaseNoire()
 
-       
     def test_clicked(self):
         """ Méthode permettant de tester le comportement de la méthode clicked.
             Cette méthode initialise l'attribut rect de chacun des attributs.
@@ -45,12 +44,12 @@ class CaseTest(unittest.TestCase):
             Une n'étant pas inclus dans ce Rect, la méthode clicked doit retourner False.
         """
 
-        self.case_vide.rect = pygame.Rect(10,10,10,10)
-        self.indicatrice.rect = pygame.Rect(10,10,10,10)
-        self.case_noire.rect = pygame.Rect(10,10,10,10)
+        self.case_vide.rect = pygame.Rect(10, 10, 10, 10)
+        self.indicatrice.rect = pygame.Rect(10, 10, 10, 10)
+        self.case_noire.rect = pygame.Rect(10, 10, 10, 10)
 
-        rect_in = (10,10,5,5)
-        rect_out = (20,20,5,5)
+        rect_in = (10, 10, 5, 5)
+        rect_out = (20, 20, 5, 5)
 
         self.assertTrue(self.case_vide.clicked(rect_in))
         self.assertFalse(self.case_vide.clicked(rect_out))
@@ -74,10 +73,10 @@ class IndicatriceTest(unittest.TestCase):
             Cette méthode initialise le rect et lance get_rect_valeur avec en paramètre un décalage.
             Elle verifie ensuite que le rect renvoyé par la méthode est cohérent.
         """
-        self.indicatrice.rect = pygame.Rect(10,10,10,10)
+        self.indicatrice.rect = pygame.Rect(10, 10, 10, 10)
         rect = self.indicatrice.get_rect_valeur((5, 5))
         self.assertTrue(rect.top == 15 and rect.left == 15)
-        self.assertEqual((rect.width,rect.height), DIMENSION_SAISIE_INDICATRICE)
+        self.assertEqual((rect.width, rect.height), DIMENSION_SAISIE_INDICATRICE)
 
     def test_clicked_saisie(self):
         """ Méthode permettant de tester le comportement des méthodes clicked_droite et clicked_bas.
@@ -86,18 +85,19 @@ class IndicatriceTest(unittest.TestCase):
             Elle verifie que le rect_right se trouve bien dans le rect_droite de l'indicatrice, et uniquement dans ce rect.
             Elle verifie que le rect_bottom se trouve bien dans le rect_bas de l'indicatrice, et uniquement dans ce rect.
         """
-        self.indicatrice.rect = pygame.Rect(10,10,10,10)
+        self.indicatrice.rect = pygame.Rect(10, 10, 10, 10)
 
-        rect_right = (13,10, 0, 0)
-        rect_bottom = (10,13, 0, 0)
+        rect_right = (13, 10, 0, 0)
+        rect_bottom = (10, 13, 0, 0)
 
-        self.indicatrice.rect_bas = self.indicatrice.get_rect_valeur((0,2))
-        self.indicatrice.rect_droite = self.indicatrice.get_rect_valeur((2,0))
+        self.indicatrice.rect_bas = self.indicatrice.get_rect_valeur((0, 2))
+        self.indicatrice.rect_droite = self.indicatrice.get_rect_valeur((2, 0))
 
         self.assertTrue(self.indicatrice.clicked_droite(rect_right))
         self.assertFalse(self.indicatrice.clicked_droite(rect_bottom))
         self.assertTrue(self.indicatrice.clicked_bas(rect_bottom))
         self.assertFalse(self.indicatrice.clicked_bas(rect_right))
+
 
 if __name__ == "__main__":
     print("Test du module cases")

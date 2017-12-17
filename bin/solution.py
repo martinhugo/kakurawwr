@@ -20,9 +20,9 @@
 import pygame
 from pygame.locals import *
 import pygame.freetype
-import grille
 import boutons
 from constantes import *
+
 
 class Solution:
     """ Classe Solution, permet d'afficher la solution d'une grille.
@@ -42,13 +42,11 @@ class Solution:
             Les autres éléments sont des boutons, qui seront initialisé dans l'affichage de l'écran de jeu.
         """
 
-        
         self._fenetre = fenetre
         self.grille = grille
         self.bouton_menu = boutons.Bouton(TITRE_BOUTON_MENU)
         self.barre_erreur = boutons.BarreErreur(pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_BOUTON))
         self.victoire = victoire
-
 
     def afficher(self):
         """ Méthode permettant d'afficher l'écran de solution à l'écran.
@@ -57,7 +55,7 @@ class Solution:
 
         titre_bouton = pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_BOUTON)
         bouton_img = pygame.image.load(CHEMIN_IMAGE_BOUTON).convert_alpha()
-                                                
+
         self.bouton_menu.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_SOLUTION)
         self.grille.afficher_grille(self._fenetre)
 
@@ -66,14 +64,13 @@ class Solution:
         else:
             self.barre_erreur.afficher_erreur(self._fenetre, MESSAGE_DEFAITE, COULEUR_MESSAGE)
 
-
     def attente_evenement(self):
         """ Méthode permettant d'afficher la solution et d'attendre un événement.
             Elle lance le fonctionnement associé à l'événement intercepté.
-            Le joueur peut retourner au menu ou quitter le jeu, depuis cette écran. 
+            Le joueur peut retourner au menu ou quitter le jeu, depuis cette écran.
             La grille résolu ainsi qu'un message lui est affiché tant qu'il ne déclenche aucune de ces actions.
         """
-        
+
         while True:
 
             self._fenetre.fill(COULEUR_FOND)
@@ -84,9 +81,6 @@ class Solution:
                 if event.type == QUIT:
                     pygame.quit()
                 if event.type == MOUSEBUTTONUP and event.button == 1:
-                    curseur = pygame.Rect(event.pos, (0,0))
+                    curseur = pygame.Rect(event.pos, (0, 0))
                     if self.bouton_menu.clicked(curseur):
                         return
-        
-        
-        

@@ -22,7 +22,6 @@
 import pygame
 from pygame.locals import *
 import pygame.freetype
-import grille
 import sauvegarde
 import impression
 import boutons
@@ -30,6 +29,7 @@ import cases
 import solution
 from constantes import *
 from exceptions import *
+
 
 class Jeu:
     """ Modèle de donnée utilisé pour modéliser la phase de jeu, dans sa représentation graphique aussi bien que dans son fontionnement.
@@ -52,7 +52,6 @@ class Jeu:
             Les autres éléments sont des boutons, qui seront complétés dans l'affichage de l'écran de jeu.
         """
 
-
         self._fenetre = fenetre
         self.grille = grille
         self.bouton_sauvegarde = boutons.Bouton(TITRE_BOUTON_SAUVEGARDE)
@@ -62,7 +61,6 @@ class Jeu:
         self.bouton_solution = boutons.Bouton(TITRE_BOUTON_SOLUTION)
 
         self.barre_erreur = boutons.BarreErreur(pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_BOUTON))
-
 
     def afficher(self):
         """ Méthode permettant d'afficher l'écran de jeu.
@@ -81,7 +79,6 @@ class Jeu:
             self.bouton_solution.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_SOLUTION)
         self.bouton_retour.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_RETOUR)
         self.grille.afficher_grille(self._fenetre)
-
 
     def jouer(self):
         """ Méthode permettant de jouer la grille.
@@ -115,7 +112,7 @@ class Jeu:
                     pygame.quit()
 
                 if event.type == MOUSEBUTTONUP and event.button == 1:
-                    curseur = pygame.Rect(event.pos, (0,0))
+                    curseur = pygame.Rect(event.pos, (0, 0))
 
                     if self.bouton_retour.clicked(curseur):
                         return
@@ -137,6 +134,6 @@ class Jeu:
                         ecran_impression = impression.Impression(self._fenetre, self.grille)
                         ecran_impression.impression()
 
-                    for(i,j) in self.grille.keys():
-                        if type(self.grille[i,j]) == cases.CaseVide and self.grille[i,j].clicked(curseur):
-                            self.grille[i,j].saisie_valeur(pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_CASEVIDE), self._fenetre)
+                    for(i, j) in self.grille.keys():
+                        if type(self.grille[i, j]) == cases.CaseVide and self.grille[i, j].clicked(curseur):
+                            self.grille[i, j].saisie_valeur(pygame.freetype.Font(CHEMIN_FICHIER_POLICE, TAILLE_POLICE_CASEVIDE), self._fenetre)

@@ -40,12 +40,10 @@ class Menu:
         """
 
         self._fenetre = fenetre
-        
+
         self.bouton_jouer = boutons.Bouton(TITRE_BOUTON_JOUER)
         self.bouton_charger = boutons.Bouton(TITRE_BOUTON_CHARGER)
         self.bouton_editeur = boutons.Bouton(TITRE_BOUTON_EDITEUR)
-
-
 
     def afficher(self):
         """ Méthode permettant d'afficher le menu à l'écran.
@@ -64,8 +62,6 @@ class Menu:
         self.bouton_charger.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_CHARGER)
         self.bouton_editeur.afficher(self._fenetre, bouton_img, titre_bouton, POSITION_BOUTON_EDITEUR)
 
-
-    
     def wait_evenement(self):
         """ Méthode d'attente d'évenements de la classe.
             Cette méthode affiche l'écran et met à jour la fênetre.
@@ -86,18 +82,17 @@ class Menu:
                     pygame.quit()
                 # Traitement des clics boutons
                 elif event.type == MOUSEBUTTONUP:
-                    
-                    curseur = pygame.Rect(event.pos, (0,0))
-                    
+
+                    curseur = pygame.Rect(event.pos, (0, 0))
+
                     if self.bouton_jouer.clicked(curseur):
                         ecran_difficulte = generation.Generation(self._fenetre)
                         ecran_difficulte.choisir_difficulte()
-                        
+
                     elif self.bouton_charger.clicked(curseur):
                         ecran_chargement = sauvegarde.Chargement(self._fenetre)
                         ecran_chargement.chargement()
-                        
+
                     elif self.bouton_editeur.clicked(curseur):
                         ecran_editeur = editeur.Editeur(self._fenetre)
                         ecran_editeur.edition()
-        

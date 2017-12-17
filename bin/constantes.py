@@ -18,15 +18,15 @@ import math
 """
 
 # Fenêtre principale
-TAILLE_FENETRE = (1200,600)
-COULEUR_FOND = (244,250,252)
-COULEUR_FOND_CASE = (255,255,255)
+TAILLE_FENETRE = (1200, 600)
+COULEUR_FOND = (244, 250, 252)
+COULEUR_FOND_CASE = (255, 255, 255)
 TITRE_JEU = "Kakurawwr"
 CHEMIN_IMAGE_ICONE = "../images/icone.png"
 
 # Information police
 CHEMIN_FICHIER_POLICE = "./calvin-regular.ttf"
-COULEUR_POLICE = (0,0,0)
+COULEUR_POLICE = (0, 0, 0)
 COULEUR_ERREUR = (255, 0, 0)
 
 # Image
@@ -40,15 +40,11 @@ TITRE_BOUTON_RETOUR = "Retour"
 POSITION_BOUTON_RETOUR = (15, 15)
 
 
-
-
 ######################## TESTS UNITAIRES ########################
 """ La partie Tests unitaires contient les valeurs pouvant servir aux tests unitaires graphiques. """
 
-TAILLE_FENETRE_TEST = (50,50)
-POSITION_IMAGE_TEST = (25,25)
-
-
+TAILLE_FENETRE_TEST = (50, 50)
+POSITION_IMAGE_TEST = (25, 25)
 
 
 ########################## MENU ##########################
@@ -72,8 +68,6 @@ POSITION_BOUTON_CHARGER = (500, 300)
 POSITION_BOUTON_EDITEUR = (500, 400)
 
 
-
-
 ########################## GENERATION ##########################
 """ La partie Generation contient:
      - les informations sur les titres des boutons
@@ -89,11 +83,8 @@ TITRE_BOUTON_MDFT = "FLAN"
 # Position
 POSITION_BOUTON_FACILE = (500, 100)
 POSITION_BOUTON_MOYEN = (500, 200)
-POSITION_BOUTON_DIFFICILE= (500, 300)
+POSITION_BOUTON_DIFFICILE = (500, 300)
 POSITION_BOUTON_MDFT = (500, 400)
-
-
-
 
 
 ########################## BOUTONS #########################
@@ -102,10 +93,6 @@ POSITION_BOUTON_MDFT = (500, 400)
 ERREUR_POSITION_Y = 550
 ERREUR_POSITION_DEPART = 500
 FACTEUR_DECALAGE_ERREUR = 3.8
-
-
-
-
 
 
 ########################## JEU ##########################
@@ -136,9 +123,8 @@ POSITION_BOUTON_RESET = (15, 510)
 POSITION_BOUTON_SOLUTION = (1035, 510)
 
 
-
-DECALAGE_INDICATRICE_VALDROITE = (25,5)
-DECALAGE_INDICATRICE_VALBAS = (5,25)
+DECALAGE_INDICATRICE_VALDROITE = (25, 5)
+DECALAGE_INDICATRICE_VALBAS = (5, 25)
 DECALAGE_SAISIE_CASE_VIDE = (10, 10)
 
 # Titre bouton
@@ -169,12 +155,6 @@ NB_LIGNE_GRILLE = 10
 NB_COLONNE_GRILLE = 10
 
 
-
-
-
-
-
-
 ################ SOLUTIONS ####################
 """ La partie Solution contient:
         - les informations sur les messages affichées à l'écran
@@ -185,14 +165,10 @@ NB_COLONNE_GRILLE = 10
 # Message
 MESSAGE_VICTOIRE = "Félicitations, vous avez gagné!"
 MESSAGE_DEFAITE = "Voici la solution de votre grille!"
-COULEUR_MESSAGE = (0,255, 0)
+COULEUR_MESSAGE = (0, 255, 0)
 
 # Positions
 POSITION_BOUTON_MENU = (1035, 510)
-
-
-
-
 
 
 ############# SAUVEGARDE & CHARGEMENT ########################
@@ -207,24 +183,20 @@ TITRE_BOUTON_VALIDER = "Valider"
 INDICATION_SAUVEGARDE = "Nommez votre grille"
 INDICATION_CHARGEMENT = "Nom de la grille à charger"
 POSITION_INDICATION_SAUVEGARDE = (375, 150)
-POSITION_INDICATION_CHARGEMENT = (325,150)
+POSITION_INDICATION_CHARGEMENT = (325, 150)
 
 # Saisie
 CHEMIN_IMAGE_ZONE_SAISIE = "../images/zone_saisie.png"
 POSITION_ZONE_SAISIE = (300, 300)
 DIMENSION_SAISIE_SAUVEGARDE = (550, 35)
-DECALAGE_ZONE_SAISIE = (25,10)
-COULEUR_SAISIE = (0,0,255)
+DECALAGE_ZONE_SAISIE = (25, 10)
+COULEUR_SAISIE = (0, 0, 255)
 
 # Fichier
 TAILLE_NOM_FICHIER_MAX = 14
 TAILLE_POLICE_SAISIE = 35
 EXTENSION_FICHIER_SAUVEGARDE = ".rawr"
 CHEMIN_DOSSIER_SAUVEGARDE = "../Sauvegarde/"
-
-
-
-
 
 
 ################ EDITEUR ####################
@@ -243,18 +215,18 @@ TITRE_BOUTON_GENERER = "Generer"
 TITRE_BOUTON_VERIF = "Vérification"
 
 # Position boutons
-POSITION_BOUTON_GENERER_FACILE =  (1035, 115)
-POSITION_BOUTON_GENERER_MOYEN =  (1035, 215)
-POSITION_BOUTON_GENERER_DIFFICILE =  (1035,  315)
+POSITION_BOUTON_GENERER_FACILE = (1035, 115)
+POSITION_BOUTON_GENERER_MOYEN = (1035, 215)
+POSITION_BOUTON_GENERER_DIFFICILE = (1035, 315)
 
 POSITION_BOUTON_JOUER_EDITEUR = (1035, 510)
-POSITION_MODE_VIDE = (220,110)
-POSITION_MODE_INDIC = (220,240)
-POSITION_MODE_NOIRE = (220,370)
+POSITION_MODE_VIDE = (220, 110)
+POSITION_MODE_INDIC = (220, 240)
+POSITION_MODE_NOIRE = (220, 370)
 
 # Saisie
 DIMENSION_SAISIE_INDICATRICE = (19, 19)
-COULEUR_SAISIE_INDICATRICE = (0,0,255)
+COULEUR_SAISIE_INDICATRICE = (0, 0, 255)
 
 SAISIE_BAS = "bas"
 SAISIE_DROITE = "droite"
@@ -270,8 +242,8 @@ CHEMIN_IMAGE_MODE_INDICATRICE = "../images/mode_indicatrice.png"
 CHEMIN_IMAGE_MODE_CASENOIRE = "../images/mode_case_noire.png"
 
 # Elargissement
-FACTEUR_ZOOM=1.1
-COTE_IMAGE_CASE_ENLARGED = math.sqrt(COTE_IMAGE_CASE*COTE_IMAGE_CASE*FACTEUR_ZOOM)
+FACTEUR_ZOOM = 1.1
+COTE_IMAGE_CASE_ENLARGED = math.sqrt(COTE_IMAGE_CASE * COTE_IMAGE_CASE * FACTEUR_ZOOM)
 DIMENSIONS_IMAGE_CASE_ENLARGED = (COTE_IMAGE_CASE_ENLARGED, COTE_IMAGE_CASE_ENLARGED)
 
 VALEUR_MIN = 1
@@ -285,20 +257,20 @@ VALEUR_MAX = 9
         - La valeur du compteur de changement de message
 """
 
-TABLEAU_MESSAGE = [ "Honnêtement, allez vous chercher un café.",
-                    "Ca va sinon?",
-                    "Oh non, pas encore!",
-                    "Ah? AH? AH! Ah ben non.",
-                    "Je ne suis pas un abruti!",
-                    "Il fait beau dehors.",
-                    "Je ne finirai JAMAIS!!",
-                    "Ca suffat comme ci!",
-                    "On est pas déjà passé par là?",
-                    "C est la bonne valeur, j en suis sûr à 100%",
-                    "TIENS, MANGE TOI CA DANS LES D- ah non.",
-                    "Ah oui je vois, pas bête, pas bête du tout.. Ah, en fait si, très très bête.",
-                    "Non, revenez, j y suis presque!",
-                    "Vous avez du temps devant vous? Moi oui."]
+TABLEAU_MESSAGE = ["Honnêtement, allez vous chercher un café.",
+                   "Ca va sinon?",
+                   "Oh non, pas encore!",
+                   "Ah? AH? AH! Ah ben non.",
+                   "Je ne suis pas un abruti!",
+                   "Il fait beau dehors.",
+                   "Je ne finirai JAMAIS!!",
+                   "Ca suffat comme ci!",
+                   "On est pas déjà passé par là?",
+                   "C est la bonne valeur, j en suis sûr à 100%",
+                   "TIENS, MANGE TOI CA DANS LES D- ah non.",
+                   "Ah oui je vois, pas bête, pas bête du tout.. Ah, en fait si, très très bête.",
+                   "Non, revenez, j y suis presque!",
+                   "Vous avez du temps devant vous? Moi oui."]
 
 MESSAGE_CALCUL = "Début du calcul de la grille"
 MESSAGE_SOLVABILITE = "Verification de la solvabilité de la grille"
@@ -318,7 +290,6 @@ POSITION_BOUTON_SOLVEUR_MOYEN = (1035, 115)
 POSITION_BOUTON_SOLVEUR_COMPLEXE = (1035, 215)
 
 VAL_CHANGEMENT_MESSAGE = 750
-
 
 
 ################# EXCEPTIONS ###################
