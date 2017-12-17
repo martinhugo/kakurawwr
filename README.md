@@ -3,9 +3,9 @@
 ## Description
 Kakurawwr is a Cross Sums game for Windows.
 
-This application was developed as a university project at Paris-Descartes during our second year of Bachelor in Computer Science.
+This application was developed as a university project at Paris-Descartes during our second year of Bachelor's in Computer Science.
 
-This game's features include, but are not limited to :
+This game's features include :
 - playing randomly generated grids
 - creating your own grids
 - saving / loading grids
@@ -17,4 +17,4 @@ A Windows installer is available [here](../../releases/latest).
 
 ## Solver
 
-This may be an old project, developed when we were still learning basic things in computer science, but the solver is still very interesting. When we started this project, we didn't know nothing about artificial intelligence. But we ended up implementing a complete forward checking with a lot of used heuristics. Later on, we reworked the project and improved the solver to the point where complex grid are solved in less than a second.
+This may be an old project, developed when we were still learning  the basics in computer science, but the solver is very interesting nonetheless. When we started this project, we didn't know anything about artificial intelligence, yet ended up implementing a complete forward checking with many heuristics. Later on, we reworked the project and improved the solver to the point that complex grids are solved in less than a second.
